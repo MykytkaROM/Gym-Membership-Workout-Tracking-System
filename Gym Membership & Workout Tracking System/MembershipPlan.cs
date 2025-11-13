@@ -17,7 +17,7 @@ namespace Gym_Membership___Workout_Tracking_System
 
                 if (String.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException("Name of membership can't be empty");
+                    throw new ArgumentNullException("Name of membership can't be empty");
                 }
                 _name = value;
 
@@ -56,7 +56,7 @@ namespace Gym_Membership___Workout_Tracking_System
                     _discountRate = 0;
                 }
                 if (value < 0 || value > 1) {
-                    throw new ArgumentException("Discount should be a value between 0 and 1");
+                    throw new ArgumentOutOfRangeException("Discount should be a value between 0 and 1");
                 }
                 _discountRate = value;
 
@@ -85,8 +85,27 @@ namespace Gym_Membership___Workout_Tracking_System
 
         private static List<MembershipPlan> _membershipPlans = new List<MembershipPlan>();
 
-        
+        public List<MembershipPlan> MembershipPlans { get
+            {
+                List<MembershipPlan> copy = new List<MembershipPlan>(_membershipPlans.Count);
 
+                _membershipPlans.ForEach((item) =>
+                {
+                    copy.Add(new MembershipPlan(item));
+                });
+                return copy;
+            }
+        }
+
+
+        public MembershipPlan(MembershipPlan other) 
+        {
+            Name = other.Name;
+            DurationMonths = other.DurationMonths;
+            Price = other.Price;
+            DiscountRate = other.DiscountRate;
+            Benefits = other.Benefits;
+        }
         public MembershipPlan(string name, int durationMonths, decimal price, decimal? discountRate, string benefits)
         {
             Name = name;
@@ -94,10 +113,20 @@ namespace Gym_Membership___Workout_Tracking_System
             Price = price;
             DiscountRate = discountRate;
             Benefits = benefits;
-            if (!_membershipPlans.Contains(this))
-            {
-                _membershipPlans.Add(this);
-            }
+            addMembershipPlan(this);
         }
+        private static void addMembershipPlan(MembershipPlan membershipPlan) 
+        {
+            if (_membershipPlans.Contains(membershipPlan) )
+            {
+                throw new ArgumentException("Value is already in the list");
+            }
+            if (membershipPlan == null)
+            {
+                throw new ArgumentNullException("Value must be specified");
+            }
+            _membershipPlans.Add(membershipPlan);
+        }
+        
     }
 }
