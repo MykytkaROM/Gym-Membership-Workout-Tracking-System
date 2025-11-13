@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Gym_Membership___Workout_Tracking_System
@@ -33,6 +35,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 {
                     throw new ArgumentException("Duration of membership can't be negative");
                 }
+                _durationMonths = value;
             }
         }
 
@@ -45,23 +48,23 @@ namespace Gym_Membership___Workout_Tracking_System
                 {
                     throw new ArgumentException("Price can't be negative");
                 }
-            } }
+                _price = value;
+            } 
+        }
 
         private decimal? _discountRate;//discountRate[0..1] : int
 
         public decimal? DiscountRate { get => _discountRate; set
             {
-                if (value == null)
-                {
-                    _discountRate = 0;
-                }
-                if (value < 0 || value > 1) {
+                
+                _discountRate = value ?? 0;
+ 
+                if (_discountRate < 0 || _discountRate > 1) {
                     throw new ArgumentOutOfRangeException("Discount should be a value between 0 and 1");
                 }
-                _discountRate = value;
-
-
-            } }
+                
+            }
+        }
 
         private string _benefits;//benefits : string
 
