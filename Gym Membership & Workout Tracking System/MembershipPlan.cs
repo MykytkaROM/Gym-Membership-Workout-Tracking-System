@@ -9,9 +9,9 @@ namespace Gym_Membership___Workout_Tracking_System
     public class MembershipPlan
     {
         private string _name;//name : string
-            public string Name
+        public string Name
         {
-            get => _name; 
+            get => _name;
             set
             {
 
@@ -25,16 +25,31 @@ namespace Gym_Membership___Workout_Tracking_System
         }
         private int _durationMonths;//durationMonths : int
 
-        public int DurationMonths { get; set; }
-       
+        public int DurationMonths
+        {
+            get => _durationMonths; set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Duration of membership can't be negative");
+                }
+            }
+        }
+
 
         private decimal _price;//price : decimal
 
-        public decimal Price { get; set; }
+        public decimal Price { get=>_price; set 
+            {
+                if (value < 0) 
+                {
+                    throw new ArgumentException("Price can't be negative");
+                }
+            } }
 
-        private int? _discountRate;//discountRate[0..1] : int
+        private decimal? _discountRate;//discountRate[0..1] : int
 
-        public int? DiscountRate { get => _discountRate; set
+        public decimal? DiscountRate { get => _discountRate; set
             {
                 if (value == null)
                 {
@@ -43,8 +58,8 @@ namespace Gym_Membership___Workout_Tracking_System
                 if (value < 0 || value > 1) {
                     throw new ArgumentException("Discount should be a value between 0 and 1");
                 }
-                  _discountRate = value;
-                
+                _discountRate = value;
+
 
             } }
 
@@ -67,5 +82,22 @@ namespace Gym_Membership___Workout_Tracking_System
 
         private static decimal _minPrice = 100;//minPrice = 100 : decimal
         public decimal MinPrice { get => _minPrice; }
+
+        private static List<MembershipPlan> _membershipPlans = new List<MembershipPlan>();
+
+        
+
+        public MembershipPlan(string name, int durationMonths, decimal price, decimal? discountRate, string benefits)
+        {
+            Name = name;
+            DurationMonths = durationMonths;
+            Price = price;
+            DiscountRate = discountRate;
+            Benefits = benefits;
+            if (!_membershipPlans.Contains(this))
+            {
+                _membershipPlans.Add(this);
+            }
+        }
     }
 }
