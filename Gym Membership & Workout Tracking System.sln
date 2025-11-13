@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36705.20 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gym Membership & Workout Tracking System", "Gym Membership & Workout Tracking System\Gym Membership & Workout Tracking System.csproj", "{0D5E4984-C6E0-400B-A19D-7AED701506F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TESTS", "TESTS\TESTS.csproj", "{3FA19F5A-5510-4B98-9603-5B761CFC602B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0D5E4984-C6E0-400B-A19D-7AED701506F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D5E4984-C6E0-400B-A19D-7AED701506F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D5E4984-C6E0-400B-A19D-7AED701506F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D5E4984-C6E0-400B-A19D-7AED701506F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FA19F5A-5510-4B98-9603-5B761CFC602B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FA19F5A-5510-4B98-9603-5B761CFC602B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FA19F5A-5510-4B98-9603-5B761CFC602B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FA19F5A-5510-4B98-9603-5B761CFC602B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BA2B4AD9-5115-4DC1-A378-3BDC41888E30}
+	EndGlobalSection
+EndGlobal
