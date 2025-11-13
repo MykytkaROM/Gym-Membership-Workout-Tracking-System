@@ -4,12 +4,22 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Gym_Membership___Workout_Tracking_System
 {
     public class MembershipPlan
     {
+        private class MembershipPlanDTO
+        {
+            public string Name { get; set; }
+            public int DurationMonths { get; set; }
+            public decimal Price { get; set; }
+            public decimal? DiscountRate { get; set; }
+            public string Benefits { get; set; }
+        }
+
         private string _name;//name : string
         public string Name
         {
@@ -88,6 +98,7 @@ namespace Gym_Membership___Workout_Tracking_System
 
         private static List<MembershipPlan> _membershipPlans = new List<MembershipPlan>();
 
+        [JsonIgnore]
         public List<MembershipPlan> MembershipPlans { get
             {
                 List<MembershipPlan> copy = new List<MembershipPlan>(_membershipPlans.Count);
@@ -99,8 +110,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 return copy;
             }
         }
-
-
+        
         public MembershipPlan(MembershipPlan other) 
         {
             Name = other.Name;
@@ -131,5 +141,47 @@ namespace Gym_Membership___Workout_Tracking_System
             _membershipPlans.Add(membershipPlan);
         }
         
+        public static void save(string path = "membershipPlans.json")
+        { 
+            var dtoList = _membershipPlans
+                .Select(m => new MembershipPlanDTO
+                {
+                    Name = m.Name,
+                    DurationMonths = m.DurationMonths,
+                    Price = m.Price,
+                    DiscountRate = m.DiscountRate,
+                    Benefits = m.Benefits
+                })
+                .ToList();
+
+            string json = JsonSerializer.Serialize(dtoList, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(path, json);
+
+            Console.WriteLine("Membership plans saved to " + path);
+        }
+        
+        public static void load(string path = "membershipPlans.json")
+        {
+            if (!File.Exists(path)) 
+                throw new FileNotFoundException($"File not found: {path}"); 
+            
+            _membershipPlans.Clear();
+
+            string json = File.ReadAllText(path);
+
+            var dtoList = JsonSerializer.Deserialize<List<MembershipPlanDTO>>(json)
+                          ?? throw new ArgumentNullException("No data in JSON file");
+
+            foreach (var dto in dtoList)
+            {
+                new MembershipPlan(
+                    dto.Name,
+                    dto.DurationMonths,
+                    dto.Price,
+                    dto.DiscountRate,
+                    dto.Benefits
+                );
+            }
+        }
     }
 }

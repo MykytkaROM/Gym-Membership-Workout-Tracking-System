@@ -21,4 +21,8 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Gym Membership &amp; Workout Tracking System\Gym Membership &amp; Workout Tracking System.csproj" />
+  </ItemGroup>
+
 </Project>
