@@ -130,6 +130,33 @@ namespace Gym_Membership___Workout_Tracking_System
             }
             _membershipPlans.Add(membershipPlan);
         }
-        
+        public static void save(string path = "membershipPlans.json") 
+        {
+            string jsonString = JsonSerializer.Serialize(_membershipPlans, new JsonSerializerOptions { WriteIndented = true });
+
+            File.WriteAllText(path, jsonString);
+
+            Console.WriteLine("Membership plans saved to " + path);
+        }
+
+        public static void load(string path = "membershipPlans.json") 
+
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"File not found: {path}");
+            _membershipPlans.Clear();
+
+            string json = File.ReadAllText(path);
+    
+            List<MembershipPlan> listFromFile = JsonSerializer.Deserialize<List<MembershipPlan>>(json) ?? throw new ArgumentNullException("No data in json file");
+
+            foreach (MembershipPlan membershipPlan in listFromFile) 
+            {
+                new MembershipPlan(membershipPlan);
+            }
+
+        }
+
     }
+    
 }
