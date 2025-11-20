@@ -4,7 +4,11 @@
     {
         static void Main(string[] args)
         {
-           
+            MembershipPlan.load();
+            List < MembershipPlan > membershipPlans = MembershipPlan.MembershipPlans;
+            foreach (var membershipPlan in membershipPlans) {
+                Console.WriteLine(membershipPlan.Name);
+            }
         }
     }
 }

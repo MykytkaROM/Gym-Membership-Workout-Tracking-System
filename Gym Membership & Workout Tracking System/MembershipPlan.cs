@@ -99,7 +99,7 @@ namespace Gym_Membership___Workout_Tracking_System
         private static List<MembershipPlan> _membershipPlans = new List<MembershipPlan>();
 
         [JsonIgnore]
-        public List<MembershipPlan> MembershipPlans { get
+        public static List<MembershipPlan> MembershipPlans { get
             {
                 List<MembershipPlan> copy = new List<MembershipPlan>(_membershipPlans.Count);
 
