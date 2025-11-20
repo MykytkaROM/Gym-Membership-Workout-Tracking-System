@@ -4,12 +4,24 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Gym_Membership___Workout_Tracking_System
 {
     public class MembershipPlan
     {
+        private class MembershipPlanDTO
+        {
+            public string Name { get; set; }
+            public int DurationMonths { get; set; }
+            public decimal Price { get; set; }
+            public decimal? DiscountRate { get; set; }
+            public string Benefits { get; set; }
+        }
+
+        public MembershipPlan() { }
+
         private string _name;//name : string
         public string Name
         {
@@ -37,19 +49,6 @@ namespace Gym_Membership___Workout_Tracking_System
                 }
                 _durationMonths = value;
             }
-        }
-
-
-        private decimal _price;//price : decimal
-
-        public decimal Price { get=>_price; set 
-            {
-                if (value < 0) 
-                {
-                    throw new ArgumentException("Price can't be negative");
-                }
-                _price = value;
-            } 
         }
 
         private decimal? _discountRate;//discountRate[0..1] : int
@@ -86,9 +85,30 @@ namespace Gym_Membership___Workout_Tracking_System
         private static decimal _minPrice = 100;//minPrice = 100 : decimal
         public decimal MinPrice { get => _minPrice; }
 
+
+        private decimal _price;//price : decimal
+
+        public decimal Price
+        {
+            get => _price; set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Price can't be negative");
+                }
+                if (value < _minPrice)
+                {
+                    throw new ArgumentException($"Price cannot be smaller than {_minPrice}");
+                }
+
+                _price = value;
+            }
+        }
+
         private static List<MembershipPlan> _membershipPlans = new List<MembershipPlan>();
 
-        public List<MembershipPlan> MembershipPlans { get
+        [JsonIgnore]
+        public static List<MembershipPlan> MembershipPlans { get
             {
                 List<MembershipPlan> copy = new List<MembershipPlan>(_membershipPlans.Count);
 
@@ -99,8 +119,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 return copy;
             }
         }
-
-
+        
         public MembershipPlan(MembershipPlan other) 
         {
             Name = other.Name;
@@ -130,33 +149,48 @@ namespace Gym_Membership___Workout_Tracking_System
             }
             _membershipPlans.Add(membershipPlan);
         }
-        public static void save(string path = "membershipPlans.json") 
-        {
-            string jsonString = JsonSerializer.Serialize(_membershipPlans, new JsonSerializerOptions { WriteIndented = true });
+        
+        public static void save(string path = "membershipPlans.json")
+        { 
+            var dtoList = _membershipPlans
+                .Select(m => new MembershipPlanDTO
+                {
+                    Name = m.Name,
+                    DurationMonths = m.DurationMonths,
+                    Price = m.Price,
+                    DiscountRate = m.DiscountRate,
+                    Benefits = m.Benefits
+                })
+                .ToList();
 
-            File.WriteAllText(path, jsonString);
+            string json = JsonSerializer.Serialize(dtoList, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(path, json);
 
             Console.WriteLine("Membership plans saved to " + path);
         }
-
-        public static void load(string path = "membershipPlans.json") 
-
+        
+        public static void load(string path = "membershipPlans.json")
         {
-            if (!File.Exists(path))
-                throw new FileNotFoundException($"File not found: {path}");
+            if (!File.Exists(path)) 
+                throw new FileNotFoundException($"File not found: {path}"); 
+            
             _membershipPlans.Clear();
 
             string json = File.ReadAllText(path);
-    
-            List<MembershipPlan> listFromFile = JsonSerializer.Deserialize<List<MembershipPlan>>(json) ?? throw new ArgumentNullException("No data in json file");
 
-            foreach (MembershipPlan membershipPlan in listFromFile) 
+            var dtoList = JsonSerializer.Deserialize<List<MembershipPlanDTO>>(json)
+                          ?? throw new ArgumentNullException("No data in JSON file");
+
+            foreach (var dto in dtoList)
             {
-                new MembershipPlan(membershipPlan);
+                new MembershipPlan(
+                    dto.Name,
+                    dto.DurationMonths,
+                    dto.Price,
+                    dto.DiscountRate,
+                    dto.Benefits
+                );
             }
-
         }
-
     }
-    
 }
