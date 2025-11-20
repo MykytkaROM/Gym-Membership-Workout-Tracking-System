@@ -49,19 +49,6 @@ namespace Gym_Membership___Workout_Tracking_System
             }
         }
 
-
-        private decimal _price;//price : decimal
-
-        public decimal Price { get=>_price; set 
-            {
-                if (value < 0) 
-                {
-                    throw new ArgumentException("Price can't be negative");
-                }
-                _price = value;
-            } 
-        }
-
         private decimal? _discountRate;//discountRate[0..1] : int
 
         public decimal? DiscountRate { get => _discountRate; set
@@ -95,6 +82,26 @@ namespace Gym_Membership___Workout_Tracking_System
 
         private static decimal _minPrice = 100;//minPrice = 100 : decimal
         public decimal MinPrice { get => _minPrice; }
+
+
+        private decimal _price;//price : decimal
+
+        public decimal Price
+        {
+            get => _price; set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Price can't be negative");
+                }
+                if (value < _minPrice)
+                {
+                    throw new ArgumentException($"Price cannot be smaller than {_minPrice}");
+                }
+
+                _price = value;
+            }
+        }
 
         private static List<MembershipPlan> _membershipPlans = new List<MembershipPlan>();
 

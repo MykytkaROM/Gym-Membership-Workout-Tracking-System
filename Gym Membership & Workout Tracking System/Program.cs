@@ -6,6 +6,7 @@
         {
             MembershipPlan.load();
             List < MembershipPlan > membershipPlans = MembershipPlan.MembershipPlans;
+            membershipPlans.Add(new MembershipPlan("Gold", 2 , 179.99m,null, "Health"));
             foreach (var membershipPlan in membershipPlans) {
                 Console.WriteLine(membershipPlan.Name);
             }
