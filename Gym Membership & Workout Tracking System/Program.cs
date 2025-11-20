@@ -4,12 +4,19 @@
     {
         static void Main(string[] args)
         {
-            MembershipPlan.load();
-            List < MembershipPlan > membershipPlans = MembershipPlan.MembershipPlans;
-            membershipPlans.Add(new MembershipPlan("Gold", 2 , 179.99m,null, "Health"));
-            foreach (var membershipPlan in membershipPlans) {
-                Console.WriteLine(membershipPlan.Name);
-            }
+            //LOAD
+            /*User.load();
+            var list = User.Users;
+            foreach (var user in list)
+            {
+                Console.WriteLine(user.Name);
+            }*/
+
+            //SAVE
+            /*User user = 
+                new User("Michael","michael@gmail.com","12345678",
+                new Address("Warsaw","Koszykowa",10));
+            User.save();*/
         }
     }
 }

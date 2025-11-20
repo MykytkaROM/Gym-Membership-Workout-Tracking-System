@@ -61,5 +61,12 @@ namespace Gym_Membership___Workout_Tracking_System
             Building = building;
 
         }
+        public Address(Address other) 
+        {
+            City = other.City;
+            Street = other.Street;
+            Building = other.Building;
+        }
+        public Address() { }
     }
 }

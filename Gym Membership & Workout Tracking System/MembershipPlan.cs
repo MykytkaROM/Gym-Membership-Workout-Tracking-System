@@ -20,6 +20,8 @@ namespace Gym_Membership___Workout_Tracking_System
             public string Benefits { get; set; }
         }
 
+        public MembershipPlan() { }
+
         private string _name;//name : string
         public string Name
         {

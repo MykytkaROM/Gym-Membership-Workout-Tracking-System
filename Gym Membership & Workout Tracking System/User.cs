@@ -12,6 +12,7 @@ namespace Gym_Membership___Workout_Tracking_System
 {
     public class User
     {
+        public User() { }
         private string _name;
         public string Name
         {
@@ -95,7 +96,7 @@ namespace Gym_Membership___Workout_Tracking_System
             Name = other.Name;
             Email = other.Email;
             PhoneNumber = other.PhoneNumber;
-            Address = other.Address;
+            Address = new Address(other.Address);
 
         }
 
