@@ -13,7 +13,7 @@ namespace TESTS
         }
 
         [Test]
-        public void Test1()
+        public void AssignsPropertiesCorrectly()
         {
             var plan = new MembershipPlan("Gold", 3, 150, 0.1m, "Gym access");
 
@@ -25,56 +25,56 @@ namespace TESTS
         }
 
         [Test]
-        public void Test2()
+        public void EmptyName_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 new MembershipPlan("", 2, 150, 0.1m, "Some Stuff"));
         }
 
         [Test]
-        public void Test3()
+        public void NegativeDuration_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() =>
                 new MembershipPlan("Basic", -1, 100, 0.1m, "Some Stuff"));
         }
 
         [Test]
-        public void Test4()
+        public void NegativePrice_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() =>
                 new MembershipPlan("Basic", 1, -1, 0.1m, "Benefits"));
         }
 
         [Test]
-        public void Test5()
+        public void DiscountBelowZero_ThrowsArgumentOutOfRangeException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
                 new MembershipPlan("Basic", 2, 100, -0.5m, "Benefits"));
         }
 
         [Test]
-        public void Test6()
+        public void DiscountAboveOne_ThrowsArgumentOutOfRangeException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
                 new MembershipPlan("Basic", 2, 100, 1.5m, "Benefits"));
         }
 
         [Test]
-        public void Test7()
+        public void NullDiscount_SetsDiscountToZero()
         {
             var plan = new MembershipPlan("Basic", 2, 100, null, "Benefits");
             Assert.That(plan.DiscountRate, Is.EqualTo(0));
         }
 
         [Test]
-        public void Test8()
+        public void EmptyBenefits_ThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() =>
                 new MembershipPlan("Basic", 2, 100, 0.2m, ""));
         }
 
         [Test]
-        public void Test9()
+        public void CopyConstructor_CopiesAllFieldsCorrectly()
         {
             var original = new MembershipPlan("Basic", 2, 100, 0.2m, "All access");
             var copy = new MembershipPlan(original);
@@ -86,7 +86,7 @@ namespace TESTS
         }
 
         [Test]
-        public void Test10()
+        public void SaveAndLoad_KeepsSystemWorkingForNewPlans()
         {
             var plan = new MembershipPlan("Silver", 3, 120, 0.15m, "Gym");
 
