@@ -91,13 +91,21 @@ namespace TESTS
             var plan = new MembershipPlan("Silver", 3, 120, 0.15m, "Gym");
 
             var temp = Path.GetTempFileName();
+            
             MembershipPlan.save(temp);
-
             MembershipPlan.load(temp);
+            
 
-            var loaded = new MembershipPlan("Silver", 3, 120, 0.15m, "Gym");
+            var loadedPlans = MembershipPlan.MembershipPlans;
+
+            Assert.That(loadedPlans.Count, Is.EqualTo(1));
+            var loaded = loadedPlans[0];
 
             Assert.That(loaded.Name, Is.EqualTo("Silver"));
+            Assert.That(loaded.DurationMonths, Is.EqualTo(3));
+            Assert.That(loaded.Price, Is.EqualTo(120));
+            Assert.That(loaded.DiscountRate, Is.EqualTo(0.15m));
+            Assert.That(loaded.Benefits, Is.EqualTo("Gym"));
         }
     }
 }
