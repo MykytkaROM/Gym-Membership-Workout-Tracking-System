@@ -9,8 +9,8 @@ public class EntryRecord
     {
         get
         {
-            if (EndTime < StartTime)
-                throw new InvalidOperationException("End time cannot be earlier than start time.");
+            if (EndTime <= StartTime)
+                throw new InvalidOperationException("End time cannot be equal or earlier than start time.");
 
             return EndTime - StartTime;
         }

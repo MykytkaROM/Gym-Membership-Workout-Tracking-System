@@ -405,13 +405,16 @@ namespace TESTS
         
         //TODO: SASHA: change the logic and rewrite the unit test for EntryRecord
         [Test]
-        public void EntryRecord_Duration_StartEqualsEnd_ReturnsZero()
+        public void EntryRecord_Duration_StartEqualsEnd_ThrowsInvalidOperationException()
         {
             var time = new DateTime(2025, 1, 1, 10, 0, 0);
 
             var record = new EntryRecord(time, time);
 
-            Assert.That(record.Duration, Is.EqualTo(TimeSpan.Zero));
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var _ = record.Duration;
+            });
         }
 
         [Test]
