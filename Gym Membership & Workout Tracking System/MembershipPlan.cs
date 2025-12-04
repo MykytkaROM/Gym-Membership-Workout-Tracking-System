@@ -11,14 +11,7 @@ namespace Gym_Membership___Workout_Tracking_System
 {
     public class MembershipPlan
     {
-        private class MembershipPlanDTO
-        {
-            public string Name { get; set; }
-            public int DurationMonths { get; set; }
-            public decimal Price { get; set; }
-            public decimal? DiscountRate { get; set; }
-            public string Benefits { get; set; }
-        }
+       
 
         public MembershipPlan() { }
 

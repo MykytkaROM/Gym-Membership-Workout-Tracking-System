@@ -11,6 +11,6 @@ namespace Gym_Membership___Workout_Tracking_System
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
-
+        public Member Member { get; set; }
     }
 }

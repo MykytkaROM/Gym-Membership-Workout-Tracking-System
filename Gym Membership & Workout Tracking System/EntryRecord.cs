@@ -4,8 +4,8 @@ namespace Gym_Membership___Workout_Tracking_System;
 
 public class EntryRecord
 {
-    public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
+    public DateTime StartTime { get;  }
+    public DateTime EndTime { get;  }
 
     public TimeSpan Duration
     {
@@ -18,24 +18,48 @@ public class EntryRecord
         }
     }
 
+    public EntryRecord(DateTime start, DateTime end, Member member)
+    {
+        StartTime = start;
+        EndTime = end;
+        AddMember(member);
+        AddEntryRecords(this);
+    }
+
     public EntryRecord(DateTime start, DateTime end)
     {
         StartTime = start;
         EndTime = end;
+        
         AddEntryRecords(this);
     }
 
-    private Member _member;
-    public Member Member { get => _member; set 
+    private Member? _member;
+    public Member? Member { get => _member; }
+
+    public void AddMember(Member member) 
+    {
+        if (member == null)
         {
-
+            throw new ArgumentNullException("Member cannot be null");
         }
-    } 
-
+        _member = member;
+        member.AddEntryRecord(this);
+    }
+    public void RemoveMember(Member member) 
+    {
+        if (member == null)
+        {
+            throw new ArgumentNullException("Member cannot be null");
+        }
+        _member = null;
+        member.RemoveEntryRecord(this);
+    }
     private static List<EntryRecord> _entries = new List<EntryRecord>();
     public static List<EntryRecord> Entries
     {
-        get{
+        get
+        {
             List<EntryRecord> copy = new List<EntryRecord>(_entries.Count);
 
             _entries.ForEach((item) =>
@@ -45,12 +69,11 @@ public class EntryRecord
             return copy;
         }
     }
-
-    public EntryRecord(EntryRecord entryRecord) 
+    public EntryRecord(EntryRecord entryRecord)
     {
         StartTime = entryRecord.StartTime;
         EndTime = entryRecord.EndTime;
-        Member = entryRecord.Member;
+        _member = entryRecord.Member;
     }
     public static void save(string path = "EntryRecords.json")
     {
@@ -85,11 +108,12 @@ public class EntryRecord
         {
             new EntryRecord(
                dto.StartTime,
-                dto.EndTime
+                dto.EndTime,
+                dto.Member
             );
         }
     }
-    private static void AddEntryRecords(EntryRecord entryRecord) 
+    private static void AddEntryRecords(EntryRecord entryRecord)
     {
         if (_entries.Contains(entryRecord))
         {
@@ -101,4 +125,14 @@ public class EntryRecord
         }
         _entries.Add(entryRecord);
     }
+    internal static void RemoveEntryRecords(EntryRecord entryRecord) 
+    {
+        if (entryRecord.Equals(null)) 
+        {
+            throw new ArgumentNullException("Entry record cannot be null");
+        }
+        _entries.Remove(entryRecord);
+        
+    }
+
 }
