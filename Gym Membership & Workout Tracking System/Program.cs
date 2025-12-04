@@ -48,6 +48,78 @@
             Console.WriteLine($"Start time: {entry.StartTime}");
             Console.WriteLine($"End time:   {entry.EndTime}");
             Console.WriteLine($"Duration:   {entry.Duration}");*/
+            
+            
+            // TestBoughtMembershipBag();
         }
+        //
+        //
+        // static void TestBoughtMembershipBag()
+        // {
+        //     var plan = new MembershipPlan("Basic", 3, 100m, 0.2m, "Gym access");
+        //
+        //     var member = new Member();
+        //     member.MemberID = 1;
+        //     member.MembershipType = "Basic";
+        //     member.TotalPoints = 0;
+        //
+        //     var bm1 = new BoughtMembership(member, plan, 0.2m, DateTime.Now, 30);
+        //     member.AddBoughtMembership(bm1);
+        //
+        //     var bm2 = new BoughtMembership(member, plan, 0.2m, DateTime.Now.AddDays(30), 30);
+        //     member.AddBoughtMembership(bm2);
+        //
+        //     Console.WriteLine("Bought memberships count: " + member.BoughtMemberships.Count);
+        //     foreach (var b in member.BoughtMemberships)
+        //     {
+        //         Console.WriteLine($"{b.DateOfPurchase:yyyy-MM-dd} {b.Plan.Name} discount={b.Discount} expiresIn={b.Expires}");
+        //     }
+        //
+        //     try
+        //     {
+        //         member.AddBoughtMembership(null);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine("Null test: " + ex.GetType().Name);
+        //     }
+        //
+        //     var another = new Member();
+        //     another.MemberID = 2;
+        //     another.MembershipType = "Basic";
+        //     another.TotalPoints = 0;
+        //
+        //     var wrong = new BoughtMembership(another, plan, 0.1m, DateTime.Now, 30);
+        //
+        //     try
+        //     {
+        //         member.AddBoughtMembership(wrong);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine("Wrong member test: " + ex.GetType().Name);
+        //     }
+        //     member.RemoveBoughtMembership(bm1);
+        //     Console.WriteLine("After remove, count: " + member.BoughtMemberships.Count);
+        //
+        //     try
+        //     {
+        //         member.RemoveBoughtMembership(bm1);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine("Remove non-existing test: " + ex.GetType().Name);
+        //     }
+        //
+        //     try
+        //     {
+        //         member.RemoveBoughtMembership(null);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine("Remove null test: " + ex.GetType().Name);
+        //     }
+        //     
+        // }
     }
 }

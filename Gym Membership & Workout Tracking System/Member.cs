@@ -112,6 +112,8 @@ namespace Gym_Membership___Workout_Tracking_System
             MembershipType = other.MembershipType;
             TotalPoints = other.TotalPoints;
             MembershipStatus = other.MembershipStatus;
+            
+            _boughtMemberships = new List<BoughtMembership>(other._boughtMemberships);
         }
         public Member(int memberID, DateTime joinDate, string membershipType, int totalPoints, MembershipStatus status) 
         {
@@ -209,6 +211,45 @@ namespace Gym_Membership___Workout_Tracking_System
                    dto.MembershipStatus
                 );
             }
+        }
+        
+        private List<BoughtMembership> _boughtMemberships = new List<BoughtMembership>();
+        public List<BoughtMembership> BoughtMemberships
+        {
+            get
+            {
+                return new List<BoughtMembership>(_boughtMemberships);
+            }
+        }
+        
+        public void AddBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null)
+            {
+                throw new ArgumentNullException(nameof(boughtMembership));
+            }
+
+            if (boughtMembership.Member != this)
+            {
+                throw new InvalidOperationException("BoughtMembership must refer to this member.");
+            }
+
+            _boughtMemberships.Add(boughtMembership);
+        }
+        
+        public void RemoveBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null)
+            {
+                throw new ArgumentNullException(nameof(boughtMembership));
+            }
+
+            if (!_boughtMemberships.Contains(boughtMembership))
+            {
+                throw new InvalidOperationException("This BoughtMembership is not associated with this member.");
+            }
+
+            _boughtMemberships.Remove(boughtMembership);
         }
     }
 }
