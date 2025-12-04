@@ -52,8 +52,8 @@
             
             // TestBoughtMembershipBag();
         }
-        
-        
+        //
+        //
         // static void TestBoughtMembershipBag()
         // {
         //     var plan = new MembershipPlan("Basic", 3, 100m, 0.2m, "Gym access");
@@ -99,6 +99,27 @@
         //     {
         //         Console.WriteLine("Wrong member test: " + ex.GetType().Name);
         //     }
+        //     member.RemoveBoughtMembership(bm1);
+        //     Console.WriteLine("After remove, count: " + member.BoughtMemberships.Count);
+        //
+        //     try
+        //     {
+        //         member.RemoveBoughtMembership(bm1);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine("Remove non-existing test: " + ex.GetType().Name);
+        //     }
+        //
+        //     try
+        //     {
+        //         member.RemoveBoughtMembership(null);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         Console.WriteLine("Remove null test: " + ex.GetType().Name);
+        //     }
+        //     
         // }
     }
 }

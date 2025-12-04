@@ -115,5 +115,20 @@ namespace Gym_Membership___Workout_Tracking_System
 
             _boughtMemberships.Add(boughtMembership);
         }
+        
+        public void RemoveBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null)
+            {
+                throw new ArgumentNullException(nameof(boughtMembership));
+            }
+
+            if (!_boughtMemberships.Contains(boughtMembership))
+            {
+                throw new InvalidOperationException("This BoughtMembership is not associated with this member.");
+            }
+
+            _boughtMemberships.Remove(boughtMembership);
+        }
     }
 }
