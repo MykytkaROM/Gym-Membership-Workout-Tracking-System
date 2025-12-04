@@ -84,10 +84,36 @@ namespace Gym_Membership___Workout_Tracking_System
             MembershipType = other.MembershipType;
             TotalPoints = other.TotalPoints;
             MembershipStatus = other.MembershipStatus;
+            
+            _boughtMemberships = new List<BoughtMembership>(other._boughtMemberships);
         }
         public Member() 
         {
 
+        }
+        
+        private List<BoughtMembership> _boughtMemberships = new List<BoughtMembership>();
+        public List<BoughtMembership> BoughtMemberships
+        {
+            get
+            {
+                return new List<BoughtMembership>(_boughtMemberships);
+            }
+        }
+        
+        public void AddBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null)
+            {
+                throw new ArgumentNullException(nameof(boughtMembership));
+            }
+
+            if (boughtMembership.Member != this)
+            {
+                throw new InvalidOperationException("BoughtMembership must refer to this member.");
+            }
+
+            _boughtMemberships.Add(boughtMembership);
         }
     }
 }
