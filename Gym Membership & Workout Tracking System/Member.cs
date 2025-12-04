@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Gym_Membership___Workout_Tracking_System
 {
@@ -13,6 +14,10 @@ namespace Gym_Membership___Workout_Tracking_System
         {
             get => _memberID; set
             {
+                if (value < 0) 
+                {
+                    throw new ArgumentException("ID cannot be negative");
+                }
                 foreach (var member in _members) 
                 {
                     if (member.MemberID == value) 
@@ -36,7 +41,11 @@ namespace Gym_Membership___Workout_Tracking_System
         {
             get => _membershipType; set
             {
-
+                if (String.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("Type of membership can't be empty or null");
+                }
+                _membershipType = value;
             }
         }
         private int _totalPoints;//totalPoints : int
@@ -44,7 +53,11 @@ namespace Gym_Membership___Workout_Tracking_System
         {
             get => _totalPoints; set
             {
-
+                if (value < 0)
+                {
+                    throw new ArgumentException("Loyalty points cannot be negative");
+                }
+                _totalPoints = value;
             }
         }
         private MembershipStatus _membershipStatus = MembershipStatus.not_purchased; //status : Enum

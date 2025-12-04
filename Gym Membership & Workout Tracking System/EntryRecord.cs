@@ -1,4 +1,6 @@
-﻿namespace Gym_Membership___Workout_Tracking_System;
+﻿using System.Text.Json;
+
+namespace Gym_Membership___Workout_Tracking_System;
 
 public class EntryRecord
 {
@@ -20,6 +22,7 @@ public class EntryRecord
     {
         StartTime = start;
         EndTime = end;
+        AddEntryRecords(this);
     }
 
     private Member _member;
@@ -48,5 +51,54 @@ public class EntryRecord
         StartTime = entryRecord.StartTime;
         EndTime = entryRecord.EndTime;
         Member = entryRecord.Member;
+    }
+    public static void save(string path = "EntryRecords.json")
+    {
+        var dtoList = _entries
+            .Select(m => new EntryRecordDTO
+            {
+                StartTime = m.StartTime,
+                EndTime = m.EndTime,
+
+            })
+            .ToList();
+
+        string json = JsonSerializer.Serialize(dtoList, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(path, json);
+
+        Console.WriteLine("EntryRecords saved to " + path);
+    }
+
+    public static void load(string path = "EntryRecords.json")
+    {
+        if (!File.Exists(path))
+            throw new FileNotFoundException($"File not found: {path}");
+
+        _entries.Clear();
+
+        string json = File.ReadAllText(path);
+
+        var dtoList = JsonSerializer.Deserialize<List<EntryRecordDTO>>(json)
+                      ?? throw new ArgumentNullException("No data in JSON file");
+
+        foreach (var dto in dtoList)
+        {
+            new EntryRecord(
+               dto.StartTime,
+                dto.EndTime
+            );
+        }
+    }
+    private static void AddEntryRecords(EntryRecord entryRecord) 
+    {
+        if (_entries.Contains(entryRecord))
+        {
+            throw new ArgumentException("Value is already in the list");
+        }
+        if (entryRecord == null)
+        {
+            throw new ArgumentNullException("Value must be specified");
+        }
+        _entries.Add(entryRecord);
     }
 }
