@@ -21,4 +21,32 @@ public class EntryRecord
         StartTime = start;
         EndTime = end;
     }
+
+    private Member _member;
+    public Member Member { get => _member; set 
+        {
+
+        }
+    } 
+
+    private static List<EntryRecord> _entries = new List<EntryRecord>();
+    public static List<EntryRecord> Entries
+    {
+        get{
+            List<EntryRecord> copy = new List<EntryRecord>(_entries.Count);
+
+            _entries.ForEach((item) =>
+            {
+                copy.Add(new EntryRecord(item));
+            });
+            return copy;
+        }
+    }
+
+    public EntryRecord(EntryRecord entryRecord) 
+    {
+        StartTime = entryRecord.StartTime;
+        EndTime = entryRecord.EndTime;
+        Member = entryRecord.Member;
+    }
 }
