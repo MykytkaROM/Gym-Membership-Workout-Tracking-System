@@ -157,6 +157,7 @@ namespace Gym_Membership___Workout_Tracking_System
             MembershipType = membershipType;
             TotalPoints = totalPoints;
             MembershipStatus = status;
+            _EntryRecords = new Dictionary<DateTime, EntryRecord>();
             AddMembers(this);
         }
         public Member(int memberID, DateTime joinDate, string membershipType, int totalPoints, MembershipStatus status, Dictionary<DateTime,EntryRecord> entryRecords)
@@ -166,6 +167,7 @@ namespace Gym_Membership___Workout_Tracking_System
             MembershipType = membershipType;
             TotalPoints = totalPoints;
             MembershipStatus = status;
+            _EntryRecords = entryRecords;
             
             AddMembers(this);
         }
@@ -215,7 +217,18 @@ namespace Gym_Membership___Workout_Tracking_System
                     MembershipType = m.MembershipType,
                     TotalPoints = m.TotalPoints,
                     MembershipStatus = m.MembershipStatus,
-
+                    EntryRecords = m._ReadOnlyEntryRecords.Values.Select(e => new EntryRecordDTO
+                    {
+                        StartTime = e.StartTime,
+                        EndTime = e.EndTime
+                    }).ToList(),
+                    BoughtMemberships = m._boughtMemberships.Select(b => new BoughtMembershipDTO
+                    {
+                        Discount = b.Discount,
+                        DateOfPurchase = b.DateOfPurchase,
+                        Expires = b.Expires,
+                        Plan = b.Plan.Name
+                    }).ToList()
 
                 })
                 .ToList();
@@ -240,13 +253,28 @@ namespace Gym_Membership___Workout_Tracking_System
 
             foreach (var dto in dtoList)
             {
-                new Member(
+                var member = new Member(
                    dto.MemberID,
                    dto.JoinDate,
                    dto.MembershipType,
                    dto.TotalPoints,
                    dto.MembershipStatus
                 );
+                member._EntryRecords = new Dictionary<DateTime, EntryRecord>();
+                
+                foreach (var entryDTO in dto.EntryRecords)
+                {
+                    var entryRecord = new EntryRecord(entryDTO.StartTime, entryDTO.EndTime);
+                    member.AddEntryRecordInternal(entryRecord);
+                }
+                
+                foreach (var boughtMembershipDTO in dto.BoughtMemberships)
+                {
+                    var plan = new MembershipPlan(boughtMembershipDTO.Plan, 3, 150, 0.1m, "Gym access");
+                    var boughtMembership = new BoughtMembership(member, plan, boughtMembershipDTO.Discount, boughtMembershipDTO.DateOfPurchase, boughtMembershipDTO.Expires);
+                    member.AddBoughtMembership(boughtMembership);
+                }
+                _members.Add(member);
             }
         }
         

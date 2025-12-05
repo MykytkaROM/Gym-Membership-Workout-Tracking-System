@@ -13,5 +13,8 @@ namespace Gym_Membership___Workout_Tracking_System
         public string MembershipType { get; set; }
         public int TotalPoints { get; set; }
         public MembershipStatus MembershipStatus { get; set; }
+        public List<EntryRecordDTO> EntryRecords { get; set; }
+        public List<BoughtMembershipDTO> BoughtMemberships { get; set; }
+        
     }
 }
