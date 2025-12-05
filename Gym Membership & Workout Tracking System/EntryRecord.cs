@@ -5,7 +5,7 @@ namespace Gym_Membership___Workout_Tracking_System;
 public class EntryRecord
 {
     public DateTime StartTime { get;  }
-    public DateTime EndTime { get;  }
+    public DateTime EndTime { get; set; }
 
     public TimeSpan Duration
     {
@@ -22,8 +22,9 @@ public class EntryRecord
     {
         StartTime = start;
         EndTime = end;
-        AddMember(member);
         AddEntryRecords(this);
+        AddMember(member);
+        
     }
 
     public EntryRecord(DateTime start, DateTime end)
@@ -44,7 +45,15 @@ public class EntryRecord
             throw new ArgumentNullException("Member cannot be null");
         }
         _member = member;
-        member.AddEntryRecord(this);
+        member.AddEntryRecordInternal(this);
+    }
+    internal void AddMemberInternal(Member member) 
+    {
+        if (member == null)
+        {
+            throw new ArgumentNullException("Member cannot be null");
+        }
+        _member = member;
     }
     public void RemoveMember(Member member) 
     {
@@ -53,7 +62,15 @@ public class EntryRecord
             throw new ArgumentNullException("Member cannot be null");
         }
         _member = null;
-        member.RemoveEntryRecord(this);
+        member.RemoveEntryRecordInternal(this);
+    }
+    internal void RemoveMemberInternal(Member member) 
+    {
+        if (member == null)
+        {
+            throw new ArgumentNullException("Member cannot be null");
+        }
+        _member = null;
     }
     private static List<EntryRecord> _entries = new List<EntryRecord>();
     public static List<EntryRecord> Entries
@@ -115,6 +132,7 @@ public class EntryRecord
     }
     private static void AddEntryRecords(EntryRecord entryRecord)
     {
+
         if (_entries.Contains(entryRecord))
         {
             throw new ArgumentException("Value is already in the list");
@@ -127,7 +145,7 @@ public class EntryRecord
     }
     internal static void RemoveEntryRecords(EntryRecord entryRecord) 
     {
-        if (entryRecord.Equals(null)) 
+        if (entryRecord==null) 
         {
             throw new ArgumentNullException("Entry record cannot be null");
         }

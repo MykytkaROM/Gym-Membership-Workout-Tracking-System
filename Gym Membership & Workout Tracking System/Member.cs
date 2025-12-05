@@ -19,13 +19,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 {
                     throw new ArgumentException("ID cannot be negative");
                 }
-                foreach (var member in _members) 
-                {
-                    if (member.MemberID == value) 
-                    {
-                        throw new ArgumentException("ID should be unique");
-                    }
-                }
+                
                 _memberID = value;
             }
         }
@@ -81,6 +75,10 @@ namespace Gym_Membership___Workout_Tracking_System
 
         public void AddEntryRecord(EntryRecord record) 
         {
+            if (_EntryRecords == null) 
+            {
+                _EntryRecords = new Dictionary<DateTime, EntryRecord>();
+            }
             if (record == null) 
             {
                 throw new ArgumentNullException("Entry record cannot be null");
@@ -90,20 +88,57 @@ namespace Gym_Membership___Workout_Tracking_System
                 throw new ArgumentException("This Entry record have already specified Member");
             }
             _EntryRecords.Add(record.StartTime, record);
-            record.AddMember(this);
+            record.AddMemberInternal(this);
         }
-        public void RemoveEntryRecord(EntryRecord record) 
+        internal void AddEntryRecordInternal(EntryRecord record) 
         {
+            if (_EntryRecords == null)
+            {
+                _EntryRecords = new Dictionary<DateTime, EntryRecord>();
+            }
             if (record == null)
             {
                 throw new ArgumentNullException("Entry record cannot be null");
             }
-            if (!record.Member.Equals(this)) 
+            if (record.Member != null)
+            {
+                throw new ArgumentException("This Entry record have already specified Member");
+            }
+            _EntryRecords.Add(record.StartTime, record);
+        }
+        public void RemoveEntryRecord(EntryRecord record) 
+        {
+            if (_EntryRecords == null)
+            {
+                throw new ArgumentNullException("Dictionary is empty");
+            }
+            if (record == null)
+            {
+                throw new ArgumentNullException("Entry record cannot be null");
+            }
+            if (record.Member != this) 
             {
                 throw new ArgumentException("Entry record have different member specified");
             }
             _EntryRecords.Remove(record.StartTime);
-            record.RemoveMember(this);
+            record.RemoveMemberInternal(this);
+        }
+
+        internal void RemoveEntryRecordInternal(EntryRecord record) 
+        {
+            if (_EntryRecords == null)
+            {
+                throw new ArgumentNullException("Dictionary is empty");
+            }
+            if (record == null)
+            {
+                throw new ArgumentNullException("Entry record cannot be null");
+            }
+            if (record.Member != this)
+            {
+                throw new ArgumentException("Entry record have different member specified");
+            }
+            _EntryRecords.Remove(record.StartTime);
         }
         public Member(Member other) 
         {
@@ -136,6 +171,7 @@ namespace Gym_Membership___Workout_Tracking_System
         }
         private static void AddMembers(Member member)
         {
+           
             if (member == null)
             {
                 throw new ArgumentNullException("Value must be specified");
@@ -144,7 +180,9 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 throw new ArgumentException("Value is already in the list");
             }
-            
+            if (_members.Any(m => m.MemberID == member.MemberID))
+                throw new ArgumentException("Duplicate member ID.");
+
             _members.Add(member);
         }
         
@@ -164,7 +202,6 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 value.RemoveMember(member);
                 EntryRecord.RemoveEntryRecords(value);
-
             }
 
         }
