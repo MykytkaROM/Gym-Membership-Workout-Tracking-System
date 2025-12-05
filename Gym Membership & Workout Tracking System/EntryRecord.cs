@@ -4,8 +4,8 @@ namespace Gym_Membership___Workout_Tracking_System;
 
 public class EntryRecord
 {
-    public DateTime StartTime { get;  }
-    public DateTime EndTime { get;  }
+    public DateTime StartTime { get; }
+    public DateTime EndTime { get; set; }
 
     public TimeSpan Duration
     {
