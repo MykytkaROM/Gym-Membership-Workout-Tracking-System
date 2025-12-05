@@ -69,9 +69,5 @@
             DateOfPurchase = other.DateOfPurchase;
             Expires = other.Expires;
         }
-
-        public BoughtMembership()
-        {
-        }
     }
 }
