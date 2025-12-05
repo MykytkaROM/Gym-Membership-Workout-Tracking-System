@@ -3,7 +3,7 @@ using Gym_Membership___Workout_Tracking_System;
 
 namespace TESTS
 {
-    public class MemberTests
+    public class Member_tests
     {
         private Member testMember;
         private EntryRecord testEntry;
@@ -143,7 +143,6 @@ namespace TESTS
             Assert.That(loadedMembers.Count, Is.EqualTo(2));
             Assert.That(loadedMembers[1].MemberID, Is.EqualTo(2));
         }
-        
         
         [TearDown]
         public void TearDown()
