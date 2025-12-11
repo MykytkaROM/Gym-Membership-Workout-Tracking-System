@@ -112,7 +112,9 @@ namespace Gym_Membership___Workout_Tracking_System
                     Specialization = m.Specialization,
                     HireDate = m.HireDate,
                     BaseSalary = m.BaseSalary,
-                    YearOfExpirience = m.YearOfExperience
+                    YearOfExpirience = m.YearOfExperience,
+                    MentorID = m.Mentor?.TrainerID,
+                    TraineeIDs = m.Trainees.Select(t => t.TrainerID).ToList()
                 })
                 .ToList();
 
@@ -133,10 +135,11 @@ namespace Gym_Membership___Workout_Tracking_System
 
             var dtoList = JsonSerializer.Deserialize<List<TrainersDTO>>(json)
                           ?? throw new ArgumentNullException("No data in JSON file");
+            Dictionary<int, Trainer> trainerMap = new Dictionary<int, Trainer>();
 
             foreach (var dto in dtoList)
             {
-                new Trainer(
+                Trainer newTrainer = new Trainer(
                     dto.TrainerID,
                     dto.Specialization,
                     dto.HireDate,
@@ -144,6 +147,28 @@ namespace Gym_Membership___Workout_Tracking_System
                     dto.YearOfExpirience
 
                 );
+                trainerMap.Add(newTrainer.TrainerID, newTrainer);
+            }
+            foreach (var dto in dtoList)
+            {
+                Trainer currentTrainer = trainerMap[dto.TrainerID];
+                if (dto.MentorID.HasValue && trainerMap.ContainsKey(dto.MentorID.Value))
+                {
+                    Trainer mentor = trainerMap[dto.MentorID.Value];
+                    currentTrainer._mentor = mentor;
+                }
+                if (dto.TraineeIDs != null && dto.TraineeIDs.Any())
+                {
+                    currentTrainer._trainees = new List<Trainer>();
+                    foreach (int traineeID in dto.TraineeIDs)
+                    {
+                        if (trainerMap.ContainsKey(traineeID))
+                        {
+                            Trainer trainee = trainerMap[traineeID];
+                            currentTrainer._trainees.Add(trainee);
+                        }
+                    }
+                }
             }
         }
 
@@ -155,6 +180,10 @@ namespace Gym_Membership___Workout_Tracking_System
         {
             get
             {
+                if (_trainees == null)
+                {
+                    return new List<Trainer>();
+                }
                 List<Trainer> copy = new List<Trainer>(_trainees.Count);
 
                 _trainees.ForEach((item) =>
@@ -197,7 +226,12 @@ namespace Gym_Membership___Workout_Tracking_System
         }
         public void AddTrainee(Trainer trainee) 
         {
+
             if (trainee == null) throw new ArgumentNullException("Trainee cannot be null");
+            if (_trainees == null)
+            {
+                _trainees = new List<Trainer>();
+            }
             if (_trainees.Contains(trainee)) throw new ArgumentException("This trainee is already in the list");
             if (this.Equals(trainee)) throw new ArgumentException("Trainer cannot mentor himself");
             _trainees.Add(trainee);
@@ -227,6 +261,38 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 trainee.DeleteMentor(this);
             }
+        }
+
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, Trainer mentor)
+        {
+            TrainerID = trainerID;
+            Specialization = specialization;
+            _hireDate = hireDate;
+            BaseSalary = baseSalary;
+            YearOfExperience = yearOfExpirience;
+            AddMentor(mentor);
+            AddTrainerEXT(this);
+        }
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, List<Trainer> trainees)
+        {
+            TrainerID = trainerID;
+            Specialization = specialization;
+            _hireDate = hireDate;
+            BaseSalary = baseSalary;
+            YearOfExperience = yearOfExpirience;
+            trainees.ForEach(trainee => { AddTrainee(trainee); });
+            AddTrainerEXT(this);
+        }
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, Trainer mentor, List<Trainer> trainees)
+        {
+            TrainerID = trainerID;
+            Specialization = specialization;
+            _hireDate = hireDate;
+            BaseSalary = baseSalary;
+            YearOfExperience = yearOfExpirience;
+            AddMentor(mentor);
+            trainees.ForEach(trainee => { AddTrainee(trainee); });
+            AddTrainerEXT(this);
         }
     }
 }

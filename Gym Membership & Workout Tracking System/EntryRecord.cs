@@ -86,7 +86,7 @@ public class EntryRecord
         EndTime = entryRecord.EndTime;
         _member = entryRecord.Member;
     }
-    public static void save(string path = "EntryRecords.json")
+   /* public static void save(string path = "EntryRecords.json")
     {
         var dtoList = _entries
             .Select(m => new EntryRecordDTO
@@ -123,7 +123,7 @@ public class EntryRecord
                 dto.Member
             );
         }
-    }
+    }*/
     private static void AddEntryRecordsEXT(EntryRecord entryRecord)
     {
 

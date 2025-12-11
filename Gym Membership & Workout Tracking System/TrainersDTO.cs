@@ -13,5 +13,7 @@ namespace Gym_Membership___Workout_Tracking_System
         public DateTime HireDate { get; set; }
         public decimal BaseSalary { get; set; }
         public int YearOfExpirience { get; set; }
+        public int? MentorID { get; set; }
+        public List<int> TraineeIDs { get; set; } = new List<int>();
     }
 }
