@@ -50,14 +50,7 @@ public class EntryRecord
         }
         _member = member;
     }
-   /* internal void AddMemberInternal(Member member) 
-    {
-        if (member == null)
-        {
-            throw new ArgumentNullException("Member cannot be null");
-        }
-        _member = member;
-    }*/
+   
     public void RemoveMember(Member member) 
     {
         if (member == null)
@@ -71,14 +64,7 @@ public class EntryRecord
         }
         _member = null;
     }
-    /*internal void RemoveMemberInternal(Member member) 
-    {
-        if (member == null)
-        {
-            throw new ArgumentNullException("Member cannot be null");
-        }
-        _member = null;
-    }*/
+    
     private static List<EntryRecord> _entries = new List<EntryRecord>();
     public static List<EntryRecord> Entries
     {
