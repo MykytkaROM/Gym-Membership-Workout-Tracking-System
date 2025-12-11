@@ -87,10 +87,13 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 throw new ArgumentException("This Entry record have already specified Member");
             }
-            _EntryRecords.Add(record.StartTime, record);
-            record.AddMemberInternal(this);
+            if (record.Member == null) 
+            {
+                _EntryRecords.Add(record.StartTime, record);
+                record.AddMember(this);
+            }
         }
-        internal void AddEntryRecordInternal(EntryRecord record) 
+        /*internal void AddEntryRecordInternal(EntryRecord record) 
         {
             if (_EntryRecords == null)
             {
@@ -105,7 +108,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 throw new ArgumentException("This Entry record have already specified Member");
             }
             _EntryRecords.Add(record.StartTime, record);
-        }
+        }*/
         public void RemoveEntryRecord(EntryRecord record) 
         {
             if (_EntryRecords == null)
@@ -120,11 +123,14 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 throw new ArgumentException("Entry record have different member specified");
             }
-            _EntryRecords.Remove(record.StartTime);
-            record.RemoveMemberInternal(this);
+            if (record.Member.Equals(this))
+            {
+                _EntryRecords.Remove(record.StartTime);
+                record.RemoveMember(this);
+            }
         }
 
-        internal void RemoveEntryRecordInternal(EntryRecord record) 
+        /*internal void RemoveEntryRecordInternal(EntryRecord record) 
         {
             if (_EntryRecords == null)
             {
@@ -139,7 +145,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 throw new ArgumentException("Entry record have different member specified");
             }
             _EntryRecords.Remove(record.StartTime);
-        }
+        }*/
         public Member(Member other) 
         {
             MemberID = other.MemberID;
@@ -158,7 +164,7 @@ namespace Gym_Membership___Workout_Tracking_System
             TotalPoints = totalPoints;
             MembershipStatus = status;
             _EntryRecords = new Dictionary<DateTime, EntryRecord>();
-            AddMembers(this);
+            AddMemberEXT(this);
         }
         public Member(int memberID, DateTime joinDate, string membershipType, int totalPoints, MembershipStatus status, Dictionary<DateTime,EntryRecord> entryRecords)
         {
@@ -169,9 +175,9 @@ namespace Gym_Membership___Workout_Tracking_System
             MembershipStatus = status;
             _EntryRecords = entryRecords;
             
-            AddMembers(this);
+            AddMemberEXT(this);
         }
-        private static void AddMembers(Member member)
+        private static void AddMemberEXT(Member member)
         {
            
             if (member == null)
@@ -188,7 +194,7 @@ namespace Gym_Membership___Workout_Tracking_System
             _members.Add(member);
         }
         
-        public static void RemoveMembers(Member member) 
+        public static void RemoveMemberEXT(Member member) 
         {
             
             if (member == null)
@@ -203,7 +209,7 @@ namespace Gym_Membership___Workout_Tracking_System
             foreach (var(key,value) in member._EntryRecords) 
             {
                 value.RemoveMember(member);
-                EntryRecord.RemoveEntryRecords(value);
+                EntryRecord.RemoveEntryRecordEXT(value);
             }
 
         }
@@ -265,7 +271,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 foreach (var entryDTO in dto.EntryRecords)
                 {
                     var entryRecord = new EntryRecord(entryDTO.StartTime, entryDTO.EndTime);
-                    member.AddEntryRecordInternal(entryRecord);
+                    member.AddEntryRecord(entryRecord);
                 }
                 
                 foreach (var boughtMembershipDTO in dto.BoughtMemberships)

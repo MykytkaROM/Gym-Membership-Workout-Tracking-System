@@ -22,7 +22,7 @@ public class EntryRecord
     {
         StartTime = start;
         EndTime = end;
-        AddEntryRecords(this);
+        AddEntryRecordsEXT(this);
         AddMember(member);
         
     }
@@ -32,7 +32,7 @@ public class EntryRecord
         StartTime = start;
         EndTime = end;
         
-        AddEntryRecords(this);
+        AddEntryRecordsEXT(this);
     }
 
     private Member? _member;
@@ -44,34 +44,41 @@ public class EntryRecord
         {
             throw new ArgumentNullException("Member cannot be null");
         }
+        if(!member._ReadOnlyEntryRecords.ContainsKey(StartTime))
+        {
+            member.AddEntryRecord(this);
+        }
         _member = member;
-        member.AddEntryRecordInternal(this);
     }
-    internal void AddMemberInternal(Member member) 
+   /* internal void AddMemberInternal(Member member) 
     {
         if (member == null)
         {
             throw new ArgumentNullException("Member cannot be null");
         }
         _member = member;
-    }
+    }*/
     public void RemoveMember(Member member) 
     {
         if (member == null)
         {
             throw new ArgumentNullException("Member cannot be null");
         }
+        if (member._ReadOnlyEntryRecords.ContainsKey(StartTime)) 
+        {
+            
+            member.RemoveEntryRecord(this);
+        }
         _member = null;
-        member.RemoveEntryRecordInternal(this);
     }
-    internal void RemoveMemberInternal(Member member) 
+    /*internal void RemoveMemberInternal(Member member) 
     {
         if (member == null)
         {
             throw new ArgumentNullException("Member cannot be null");
         }
         _member = null;
-    }
+    }*/
     private static List<EntryRecord> _entries = new List<EntryRecord>();
     public static List<EntryRecord> Entries
     {
@@ -130,7 +137,7 @@ public class EntryRecord
             );
         }
     }
-    private static void AddEntryRecords(EntryRecord entryRecord)
+    private static void AddEntryRecordsEXT(EntryRecord entryRecord)
     {
 
         if (_entries.Contains(entryRecord))
@@ -143,13 +150,19 @@ public class EntryRecord
         }
         _entries.Add(entryRecord);
     }
-    internal static void RemoveEntryRecords(EntryRecord entryRecord) 
+    public static void RemoveEntryRecordEXT(EntryRecord entryRecord) 
     {
         if (entryRecord==null) 
         {
             throw new ArgumentNullException("Entry record cannot be null");
         }
         _entries.Remove(entryRecord);
+        if (entryRecord.Member == null) 
+        {
+            throw new ArgumentNullException("This entry record does not have member");
+        }
+        entryRecord.Member.RemoveEntryRecord(entryRecord);
+        entryRecord._member = null;
         
     }
 

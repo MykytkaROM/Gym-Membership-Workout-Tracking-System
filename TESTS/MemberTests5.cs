@@ -62,7 +62,7 @@ namespace TESTS
             var loadedMember = Member.Members[0];
             Assert.That(loadedMember.MemberID, Is.EqualTo(1));
             Assert.That(loadedMember.MembershipType, Is.EqualTo("Basic"));
-            //Assert.That(loadedMember._ReadOnlyEntryRecords.Count, Is.EqualTo(1));
+            Assert.That(loadedMember._ReadOnlyEntryRecords.Count, Is.EqualTo(1));
             Assert.That(loadedMember.BoughtMemberships.Count, Is.EqualTo(1));
         }
         
