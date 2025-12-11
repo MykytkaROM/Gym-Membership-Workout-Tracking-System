@@ -3,7 +3,7 @@ using Gym_Membership___Workout_Tracking_System;
 
 namespace TESTS
 {
-    public class MemberTests
+    public class Member_tests
     {
         private Member testMember;
         private EntryRecord testEntry;
@@ -66,6 +66,83 @@ namespace TESTS
             Assert.That(loadedMember.BoughtMemberships.Count, Is.EqualTo(1));
         }
         
+        [Test]
+        public void TestAddAndRemoveEntryRecord()
+        {
+            testMember.AddEntryRecord(testEntry);
+            Assert.That(testMember._ReadOnlyEntryRecords.Count, Is.EqualTo(1));
+            
+            testMember.RemoveEntryRecord(testEntry);
+            Assert.That(testMember._ReadOnlyEntryRecords.Count, Is.EqualTo(0));
+        }
+        
+        [Test]
+        public void TestRemoveBoughtMembership()
+        {
+            testMember.AddBoughtMembership(testBoughtMembership);
+            Assert.That(testMember.BoughtMemberships.Count, Is.EqualTo(1));
+            
+            testMember.RemoveBoughtMembership(testBoughtMembership);
+            Assert.That(testMember.BoughtMemberships.Count, Is.EqualTo(0));
+        }
+        
+        [Test]
+        public void TestSaveAndLoadEmptyData()
+        {
+            Member.save(tempFile);
+            Member.load(tempFile);
+
+            var loadedMember = Member.Members[0];
+            Assert.That(loadedMember.MemberID, Is.EqualTo(1));
+            Assert.That(loadedMember.MembershipType, Is.EqualTo("Basic"));
+            Assert.That(loadedMember._ReadOnlyEntryRecords.Count, Is.EqualTo(0));
+            Assert.That(loadedMember.BoughtMemberships.Count, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TestAddNullEntryRecord()
+        {
+            Assert.Throws<ArgumentNullException>(() => testMember.AddEntryRecord(null));
+        }
+
+        [Test]
+        public void TestAddNullBoughtMembership()
+        {
+            Assert.Throws<ArgumentNullException>(() => testMember.AddBoughtMembership(null));
+        }
+
+        [Test]
+        public void TestRemoveEntryRecordWithNonMatchingMember()
+        {
+            var differentMember = new Member(2, new DateTime(2025, 1, 1), "Silver", 0, MembershipStatus.active);
+            testEntry.AddMember(differentMember);
+
+            Assert.Throws<ArgumentException>(() => testMember.RemoveEntryRecord(testEntry));
+        }
+        
+        [Test]
+        public void TestAddEntryRecordWithAssignedMember()
+        {
+            testEntry.AddMember(testMember);
+            Assert.Throws<ArgumentException>(() => testMember.AddEntryRecord(testEntry));
+        }
+        
+        [Test]
+        public void TestSaveAndLoadMultipleMembers()
+        {
+            var secondMember = new Member(2, new DateTime(2025, 1, 2), "Premium", 100, MembershipStatus.active);
+            secondMember.AddEntryRecord(testEntry);
+            secondMember.AddBoughtMembership(testBoughtMembership);
+            
+            Member.save(tempFile);
+            Member.load(tempFile);
+
+            var loadedMembers = Member.Members;
+    
+            
+            Assert.That(loadedMembers.Count, Is.EqualTo(2));
+            Assert.That(loadedMembers[1].MemberID, Is.EqualTo(2));
+        }
         
         [TearDown]
         public void TearDown()

@@ -103,7 +103,7 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 throw new ArgumentNullException("Entry record cannot be null");
             }
-            if (record.Member != null)
+            if (record.Member != this)
             {
                 throw new ArgumentException("This Entry record have already specified Member");
             }
@@ -148,6 +148,14 @@ namespace Gym_Membership___Workout_Tracking_System
         }*/
         public Member(Member other) 
         {
+            if (other._EntryRecords != null)
+            {
+                _EntryRecords = new Dictionary<DateTime, EntryRecord>(other._EntryRecords);
+            }
+            else
+            {
+                _EntryRecords = new Dictionary<DateTime, EntryRecord>();
+            }
             MemberID = other.MemberID;
             _joinDate = other.JoinDate;
             MembershipType = other.MembershipType;
@@ -233,7 +241,7 @@ namespace Gym_Membership___Workout_Tracking_System
                         Discount = b.Discount,
                         DateOfPurchase = b.DateOfPurchase,
                         Expires = b.Expires,
-                        Plan = b.Plan.Name
+                        Plan = b.Plan
                     }).ToList()
 
                 })
@@ -276,11 +284,9 @@ namespace Gym_Membership___Workout_Tracking_System
                 
                 foreach (var boughtMembershipDTO in dto.BoughtMemberships)
                 {
-                    var plan = new MembershipPlan(boughtMembershipDTO.Plan, 3, 150, 0.1m, "Gym access");
-                    var boughtMembership = new BoughtMembership(member, plan, boughtMembershipDTO.Discount, boughtMembershipDTO.DateOfPurchase, boughtMembershipDTO.Expires);
+                    var boughtMembership = new BoughtMembership(member, boughtMembershipDTO.Plan, boughtMembershipDTO.Discount, boughtMembershipDTO.DateOfPurchase, boughtMembershipDTO.Expires);
                     member.AddBoughtMembership(boughtMembership);
                 }
-                _members.Add(member);
             }
         }
         
@@ -300,10 +306,10 @@ namespace Gym_Membership___Workout_Tracking_System
                 throw new ArgumentNullException(nameof(boughtMembership));
             }
 
-            if (boughtMembership.Member != this)
-            {
-                throw new InvalidOperationException("BoughtMembership must refer to this member.");
-            }
+            // if (boughtMembership.Member != this)
+            // {
+            //     throw new InvalidOperationException("BoughtMembership must refer to this member.");
+            // }
 
             _boughtMemberships.Add(boughtMembership);
         }
