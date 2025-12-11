@@ -1,0 +1,149 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Gym_Membership___Workout_Tracking_System
+{
+    public class Trainer
+    {
+        private int _trainerID;   //trainerID : int
+        public int TrainerID { get => _trainerID; set 
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("ID cannot be negative");
+                }
+
+                _trainerID = value;
+            } 
+        }
+        private string _specialization; //specialization : string
+        public string Specialization { get => _specialization; set 
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("Specialization can't be empty or null");
+                }
+                _specialization = value;
+            } 
+        }
+        private DateTime _hireDate;//hireDate : DateTime
+        public DateTime HireDate => _hireDate;
+
+        private decimal _baseSalary;//baseSalary : decimal
+        public decimal BaseSalary { get => _baseSalary; set 
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Base salary can't be negative");
+                }
+                _baseSalary = value;
+            } 
+        }
+        private int _yearsOfExperience;//yearsOfExperience : int
+        public int YearOfExperience { get => _yearsOfExperience; set 
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("ID cannot be negative");
+                }
+                _yearsOfExperience = value;
+            } 
+        }
+        public decimal CurrentSalary { get { return _baseSalary * (1 + _yearsOfExperience); } }
+
+        private static List<Trainer> _trainers = new List<Trainer>();
+        public static List<Trainer> Trainers
+        {
+            get
+            {
+                List<Trainer> copy = new List<Trainer>(_trainers.Count);
+
+                _trainers.ForEach((item) =>
+                {
+                    copy.Add(new Trainer(item));
+                });
+                return copy;
+            }
+        }
+        private static void AddTrainerEXT(Trainer trainer) 
+        {
+            if (trainer == null)
+            {
+                throw new ArgumentNullException("Value must be specified");
+            }
+            if (_trainers.Contains(trainer))
+            {
+                throw new ArgumentException("Value is already in the list");
+            }
+            if (_trainers.Any(m => m.TrainerID == trainer.TrainerID))
+                throw new ArgumentException("Duplicate trainer ID.");
+
+            _trainers.Add(trainer);
+        }
+        public Trainer(Trainer trainer) 
+        {
+            TrainerID = trainer.TrainerID;
+            Specialization = trainer.Specialization;
+            _hireDate = trainer.HireDate;
+            BaseSalary = trainer.BaseSalary;
+            YearOfExperience = trainer.YearOfExperience;
+            
+        }
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience) 
+        {
+            TrainerID= trainerID;
+            Specialization = specialization;
+            _hireDate = hireDate;
+            BaseSalary = baseSalary;
+            YearOfExperience= yearOfExpirience;
+            AddTrainerEXT(this);
+        }
+        public static void save(string path = "Trainers.json")
+        {
+            var dtoList = _trainers
+                .Select(m => new TrainersDTO
+                {
+                   TrainerID = m.TrainerID,
+                    Specialization = m.Specialization,
+                    HireDate = m.HireDate,
+                    BaseSalary = m.BaseSalary,
+                    YearOfExpirience = m.YearOfExperience
+                })
+                .ToList();
+
+            string json = JsonSerializer.Serialize(dtoList, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(path, json);
+
+            Console.WriteLine("Trainers saved to " + path);
+        }
+
+        public static void load(string path = "Trainers.json")
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"File not found: {path}");
+
+            _trainers.Clear();
+
+            string json = File.ReadAllText(path);
+
+            var dtoList = JsonSerializer.Deserialize<List<TrainersDTO>>(json)
+                          ?? throw new ArgumentNullException("No data in JSON file");
+
+            foreach (var dto in dtoList)
+            {
+                new Trainer(
+                    dto.TrainerID,
+                    dto.Specialization,
+                    dto.HireDate,
+                    dto.BaseSalary,
+                    dto.YearOfExpirience
+
+                );
+            }
+        }
+    }
+}
