@@ -93,22 +93,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 record.AddMember(this);
             }
         }
-        /*internal void AddEntryRecordInternal(EntryRecord record) 
-        {
-            if (_EntryRecords == null)
-            {
-                _EntryRecords = new Dictionary<DateTime, EntryRecord>();
-            }
-            if (record == null)
-            {
-                throw new ArgumentNullException("Entry record cannot be null");
-            }
-            if (record.Member != this)
-            {
-                throw new ArgumentException("This Entry record have already specified Member");
-            }
-            _EntryRecords.Add(record.StartTime, record);
-        }*/
+        
         public void RemoveEntryRecord(EntryRecord record) 
         {
             if (_EntryRecords == null)
@@ -130,22 +115,7 @@ namespace Gym_Membership___Workout_Tracking_System
             }
         }
 
-        /*internal void RemoveEntryRecordInternal(EntryRecord record) 
-        {
-            if (_EntryRecords == null)
-            {
-                throw new ArgumentNullException("Dictionary is empty");
-            }
-            if (record == null)
-            {
-                throw new ArgumentNullException("Entry record cannot be null");
-            }
-            if (record.Member != this)
-            {
-                throw new ArgumentException("Entry record have different member specified");
-            }
-            _EntryRecords.Remove(record.StartTime);
-        }*/
+        
         public Member(Member other) 
         {
             if (other._EntryRecords != null)
@@ -181,6 +151,10 @@ namespace Gym_Membership___Workout_Tracking_System
             MembershipType = membershipType;
             TotalPoints = totalPoints;
             MembershipStatus = status;
+            foreach (var (key,value) in entryRecords) 
+            {
+                value.AddMember(this);
+            }
             _EntryRecords = entryRecords;
             
             AddMemberEXT(this);

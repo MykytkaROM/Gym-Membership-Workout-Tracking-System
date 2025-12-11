@@ -53,13 +53,14 @@ public class EntryRecord
    
     public void RemoveMember(Member member) 
     {
+        if (_member == null) throw new ArgumentNullException("Member should be added first");
         if (member == null)
         {
             throw new ArgumentNullException("Member cannot be null");
         }
+        if (!_member.Equals(member)) throw new ArgumentException("Member specified is different from member in this entry record"); 
         if (member._ReadOnlyEntryRecords.ContainsKey(StartTime)) 
         {
-            
             member.RemoveEntryRecord(this);
         }
         _member = null;
