@@ -17,12 +17,7 @@
             }
         }
 
-        private DateTime _dateOfPurchase;
-        public DateTime DateOfPurchase
-        {
-            get => _dateOfPurchase;
-            set => _dateOfPurchase = value;
-        }
+        public DateTime DateOfPurchase { get; set; }
 
         private int _expires;
         public int Expires
@@ -42,32 +37,57 @@
         public Member Member
         {
             get => _member;
-            set => _member = value ?? throw new ArgumentNullException(nameof(value));
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+
+                if (_member != null && !ReferenceEquals(_member, value))
+                    throw new InvalidOperationException("Member cannot be changed once set.");
+
+                _member = value;
+            }
         }
 
         private MembershipPlan _plan;
         public MembershipPlan Plan
         {
             get => _plan;
-            set => _plan = value ?? throw new ArgumentNullException(nameof(value));
+            set
+            {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+
+                if (_plan != null && !ReferenceEquals(_plan, value))
+                    throw new InvalidOperationException("Plan cannot be changed once set.");
+
+                _plan = value;
+            }
         }
 
         public BoughtMembership(Member member, MembershipPlan plan, decimal discount, DateTime dateOfPurchase, int expires)
         {
+            if (member == null) throw new ArgumentNullException(nameof(member));
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+
             Member = member;
             Plan = plan;
+
             Discount = discount;
             DateOfPurchase = dateOfPurchase;
             Expires = expires;
+
+            member.AddBoughtMembership(this);
+            plan.AddBoughtMembership(this);
+        }
+        
+        public BoughtMembership(BoughtMembership other)
+            : this(other.Member, other.Plan, other.Discount, other.DateOfPurchase, other.Expires)
+        {
         }
 
-        public BoughtMembership(BoughtMembership other)
+        public void Delete()
         {
-            Member = other.Member;
-            Plan = other.Plan;
-            Discount = other.Discount;
-            DateOfPurchase = other.DateOfPurchase;
-            Expires = other.Expires;
+            if (_member != null) _member.RemoveBoughtMembership(this);
+            if (_member != null) _plan.RemoveBoughtMembership(this);
         }
     }
 }

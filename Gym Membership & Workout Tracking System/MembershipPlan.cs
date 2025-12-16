@@ -143,6 +143,28 @@ namespace Gym_Membership___Workout_Tracking_System
             _membershipPlans.Add(membershipPlan);
         }
         
+        private List<BoughtMembership> _boughtMemberships = new List<BoughtMembership>();
+        public List<BoughtMembership> BoughtMemberships => new List<BoughtMembership>(_boughtMemberships);
+
+        public void AddBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            if (!ReferenceEquals(boughtMembership.Plan, this))
+                throw new InvalidOperationException("BoughtMembership must refer to this plan.");
+            if (_boughtMemberships.Contains(boughtMembership)) return;
+
+            _boughtMemberships.Add(boughtMembership);
+        }
+
+        public void RemoveBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            if (!_boughtMemberships.Contains(boughtMembership))
+                throw new InvalidOperationException("This BoughtMembership is not associated with this plan.");
+
+            _boughtMemberships.Remove(boughtMembership);
+        }
+        
         public static void save(string path = "membershipPlans.json")
         { 
             var dtoList = _membershipPlans
@@ -160,6 +182,18 @@ namespace Gym_Membership___Workout_Tracking_System
             File.WriteAllText(path, json);
 
             Console.WriteLine("Membership plans saved to " + path);
+        }
+        public static MembershipPlan GetByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name), "Plan name must be specified.");
+
+            var plan = _membershipPlans.FirstOrDefault(p => p.Name == name);
+
+            if (plan == null)
+                throw new ArgumentException("Plan not found: " + name);
+
+            return plan;
         }
         
         public static void load(string path = "membershipPlans.json")

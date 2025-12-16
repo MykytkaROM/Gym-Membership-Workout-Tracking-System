@@ -215,7 +215,7 @@ namespace Gym_Membership___Workout_Tracking_System
                         Discount = b.Discount,
                         DateOfPurchase = b.DateOfPurchase,
                         Expires = b.Expires,
-                        Plan = b.Plan
+                        PlanName = b.Plan.Name
                     }).ToList()
 
                 })
@@ -226,6 +226,7 @@ namespace Gym_Membership___Workout_Tracking_System
 
             Console.WriteLine("Members saved to " + path);
         }
+        
 
         public static void load(string path = "Member.json")
         {
@@ -258,47 +259,30 @@ namespace Gym_Membership___Workout_Tracking_System
                 
                 foreach (var boughtMembershipDTO in dto.BoughtMemberships)
                 {
-                    var boughtMembership = new BoughtMembership(member, boughtMembershipDTO.Plan, boughtMembershipDTO.Discount, boughtMembershipDTO.DateOfPurchase, boughtMembershipDTO.Expires);
-                    member.AddBoughtMembership(boughtMembership);
+                    var plan = MembershipPlan.GetByName(boughtMembershipDTO.PlanName);
+                    _ = new BoughtMembership(member, plan, boughtMembershipDTO.Discount, boughtMembershipDTO.DateOfPurchase, boughtMembershipDTO.Expires);
                 }
             }
         }
         
         private List<BoughtMembership> _boughtMemberships = new List<BoughtMembership>();
-        public List<BoughtMembership> BoughtMemberships
-        {
-            get
-            {
-                return new List<BoughtMembership>(_boughtMemberships);
-            }
-        }
+        public List<BoughtMembership> BoughtMemberships => new List<BoughtMembership>(_boughtMemberships);
         
         public void AddBoughtMembership(BoughtMembership boughtMembership)
         {
-            if (boughtMembership == null)
-            {
-                throw new ArgumentNullException(nameof(boughtMembership));
-            }
-
-            // if (boughtMembership.Member != this)
-            // {
-            //     throw new InvalidOperationException("BoughtMembership must refer to this member.");
-            // }
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            if (!ReferenceEquals(boughtMembership.Member, this))
+                throw new InvalidOperationException("BoughtMembership must refer to this member.");
+            if (_boughtMemberships.Contains(boughtMembership)) return;
 
             _boughtMemberships.Add(boughtMembership);
         }
         
         public void RemoveBoughtMembership(BoughtMembership boughtMembership)
         {
-            if (boughtMembership == null)
-            {
-                throw new ArgumentNullException(nameof(boughtMembership));
-            }
-
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
             if (!_boughtMemberships.Contains(boughtMembership))
-            {
                 throw new InvalidOperationException("This BoughtMembership is not associated with this member.");
-            }
 
             _boughtMemberships.Remove(boughtMembership);
         }
