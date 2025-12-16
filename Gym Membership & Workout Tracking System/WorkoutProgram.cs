@@ -104,6 +104,11 @@ public class WorkoutProgram
         if (_exercises.Contains(exercise)) throw new ArgumentException("This exercise is already in the program");
 
         _exercises.Add(exercise);
+        
+        if (!exercise.ContainsWorkoutProgram(this))
+        {
+            exercise.AddWorkoutProgram(this);
+        }
     }
     
     public void AddExerciseAt(Exercise exercise, int index)
@@ -113,6 +118,11 @@ public class WorkoutProgram
         if (index < 0 || index > _exercises.Count) throw new ArgumentOutOfRangeException("Index is out of range");
 
         _exercises.Insert(index, exercise);
+        
+        if (!exercise.ContainsWorkoutProgram(this))
+        {
+            exercise.AddWorkoutProgram(this);
+        }
     }
     
     public void DeleteExercise(Exercise exercise)
@@ -122,6 +132,11 @@ public class WorkoutProgram
         if (_exercises.Count == 1) throw new InvalidOperationException("WorkoutProgram must contain at least 1 exercise");
 
         _exercises.Remove(exercise);
+        
+        if (exercise.ContainsWorkoutProgram(this))
+        {
+            exercise.RemoveWorkoutProgram(this);
+        }
     }
     
     public void MoveExercise(Exercise exercise, int newIndex)
