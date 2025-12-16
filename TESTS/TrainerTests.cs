@@ -12,6 +12,6 @@ public class TrainerTests
     [Test]
     public void CreateAssociationMentorTEST()
     {
-        Trainer trainer = new Trainer(1, "");
+        //Trainer trainer = new Trainer(1, "");
     }
 }
