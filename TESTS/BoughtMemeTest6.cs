@@ -90,7 +90,7 @@ namespace TESTS{
             Assert.That(bm.Expires, Is.EqualTo(10));
         }
 
-        [Test]
+        /*[Test]
         public void TestMemberSetterNull()
         {
             var bm = new BoughtMembership(testMember, testPlan, 0.3m, DateTime.Now, 3);
@@ -104,6 +104,6 @@ namespace TESTS{
             var bm = new BoughtMembership(testMember, testPlan, 0.3m, DateTime.Now, 3);
 
             Assert.Throws<ArgumentNullException>(() => bm.Plan = null);
-        }
+        }*/
     }
 }

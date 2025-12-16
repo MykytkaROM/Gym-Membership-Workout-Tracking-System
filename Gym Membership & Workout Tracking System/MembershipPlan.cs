@@ -143,27 +143,6 @@ namespace Gym_Membership___Workout_Tracking_System
             _membershipPlans.Add(membershipPlan);
         }
         
-        private List<BoughtMembership> _boughtMemberships = new List<BoughtMembership>();
-        public List<BoughtMembership> BoughtMemberships => new List<BoughtMembership>(_boughtMemberships);
-
-        public void AddBoughtMembership(BoughtMembership boughtMembership)
-        {
-            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
-            if (!ReferenceEquals(boughtMembership.Plan, this))
-                throw new InvalidOperationException("BoughtMembership must refer to this plan.");
-            if (_boughtMemberships.Contains(boughtMembership)) return;
-
-            _boughtMemberships.Add(boughtMembership);
-        }
-
-        public void RemoveBoughtMembership(BoughtMembership boughtMembership)
-        {
-            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
-            if (!_boughtMemberships.Contains(boughtMembership))
-                throw new InvalidOperationException("This BoughtMembership is not associated with this plan.");
-
-            _boughtMemberships.Remove(boughtMembership);
-        }
         
         public static void save(string path = "membershipPlans.json")
         { 
@@ -219,5 +198,40 @@ namespace Gym_Membership___Workout_Tracking_System
                 );
             }
         }
+        
+        private readonly List<BoughtMembership> _boughtMemberships = new List<BoughtMembership>();
+        public List<BoughtMembership> BoughtMemberships => new List<BoughtMembership>(_boughtMemberships);
+
+        public void AddBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            boughtMembership.AddBoughtMembership(this);
+        }
+
+        public void RemoveBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            boughtMembership.RemoveBoughtMembership(this);
+        }
+
+        public void LinkBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            if (_boughtMemberships.Contains(boughtMembership)) return;
+            _boughtMemberships.Add(boughtMembership);
+        }
+
+        public void UnlinkBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            _boughtMemberships.Remove(boughtMembership);
+        }
+
+        public bool HasBoughtMembership(BoughtMembership boughtMembership)
+        {
+            if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
+            return _boughtMemberships.Contains(boughtMembership);
+        }
+
     }
 }
