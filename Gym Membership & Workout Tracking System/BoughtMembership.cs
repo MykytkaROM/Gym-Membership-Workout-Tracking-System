@@ -32,51 +32,79 @@
                 _expires = value;
             }
         }
-
         private Member _member;
-        public Member Member
-        {
-            get => _member;
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-
-                if (_member != null && !ReferenceEquals(_member, value))
-                    throw new InvalidOperationException("Member cannot be changed once set.");
-
-                _member = value;
-            }
-        }
+        public Member Member => _member;
 
         private MembershipPlan _plan;
-        public MembershipPlan Plan
-        {
-            get => _plan;
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
+        public MembershipPlan Plan => _plan;
 
-                if (_plan != null && !ReferenceEquals(_plan, value))
-                    throw new InvalidOperationException("Plan cannot be changed once set.");
-
-                _plan = value;
-            }
-        }
-
-        public BoughtMembership(Member member, MembershipPlan plan, decimal discount, DateTime dateOfPurchase, int expires)
+        public void AddBoughtMembership(Member member)
         {
             if (member == null) throw new ArgumentNullException(nameof(member));
+
+            if (_member != null && !ReferenceEquals(_member, member))
+                throw new InvalidOperationException("BoughtMembership already linked to another Member.");
+
+            _member = member;
+
+            if (!member.HasBoughtMembership(this))
+                member.LinkBoughtMembership(this);
+
+            if (_plan != null && !_plan.HasBoughtMembership(this))
+                _plan.LinkBoughtMembership(this);
+        }
+
+        public void AddBoughtMembership(MembershipPlan plan)
+        {
             if (plan == null) throw new ArgumentNullException(nameof(plan));
 
-            Member = member;
-            Plan = plan;
+            if (_plan != null && !ReferenceEquals(_plan, plan))
+                throw new InvalidOperationException("BoughtMembership already linked to another MembershipPlan.");
+
+            _plan = plan;
+
+            if (!plan.HasBoughtMembership(this))
+                plan.LinkBoughtMembership(this);
+
+            if (_member != null && !_member.HasBoughtMembership(this))
+                _member.LinkBoughtMembership(this);
+        }
+
+        public void RemoveBoughtMembership(Member member)
+        {
+            if (member == null) throw new ArgumentNullException(nameof(member));
+            if (!ReferenceEquals(_member, member))
+                throw new InvalidOperationException("This BoughtMembership is not linked to this Member.");
+
+            if (!member.HasBoughtMembership(this))
+                throw new InvalidOperationException("Inconsistent state: Member does not contain this BoughtMembership.");
+
+            member.UnlinkBoughtMembership(this);
+            _member = null;
+        }
+
+        public void RemoveBoughtMembership(MembershipPlan plan)
+        {
+            if (plan == null) throw new ArgumentNullException(nameof(plan));
+            if (!ReferenceEquals(_plan, plan))
+                throw new InvalidOperationException("This BoughtMembership is not linked to this MembershipPlan.");
+
+            if (!plan.HasBoughtMembership(this))
+                throw new InvalidOperationException("Inconsistent state: Plan does not contain this BoughtMembership.");
+
+            plan.UnlinkBoughtMembership(this);
+            _plan = null;
+        }
+        
+        public BoughtMembership(Member member, MembershipPlan plan, decimal discount, DateTime dateOfPurchase, int expires)
+        {
 
             Discount = discount;
             DateOfPurchase = dateOfPurchase;
             Expires = expires;
 
-            member.AddBoughtMembership(this);
-            plan.AddBoughtMembership(this);
+            AddBoughtMembership(member);
+            AddBoughtMembership(plan);
         }
         
         public BoughtMembership(BoughtMembership other)
@@ -86,8 +114,8 @@
 
         public void Delete()
         {
-            if (_member != null) _member.RemoveBoughtMembership(this);
-            if (_member != null) _plan.RemoveBoughtMembership(this);
+            if (_member != null) RemoveBoughtMembership(_member);
+            if (_plan != null) RemoveBoughtMembership(_plan);
         }
     }
 }
