@@ -1,4 +1,6 @@
-﻿namespace TESTS;
+﻿using Gym_Membership___Workout_Tracking_System;
+
+namespace TESTS;
 
 public class TrainerTests
 {
@@ -8,8 +10,8 @@ public class TrainerTests
     }
 
     [Test]
-    public void Test1()
+    public void CreateAssociationMentorTEST()
     {
-        Assert.Pass();
+        Trainer trainer = new Trainer(1, "");
     }
 }

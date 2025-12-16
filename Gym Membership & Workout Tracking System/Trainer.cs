@@ -257,7 +257,7 @@ namespace Gym_Membership___Workout_Tracking_System
             if (trainee == null) throw new ArgumentNullException("Trainee cannot be null");
             if (trainee.Mentor != this) throw new ArgumentException("Trainee have different mentor specified");
             _trainees.Remove(trainee);
-            if (trainee.Mentor != null) 
+            if (trainee.Mentor != null && trainee.Mentor.Equals(this)) 
             {
                 trainee.DeleteMentor(this);
             }
