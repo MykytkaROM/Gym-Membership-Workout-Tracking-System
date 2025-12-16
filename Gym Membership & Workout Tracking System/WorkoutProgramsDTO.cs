@@ -13,11 +13,4 @@ namespace Gym_Membership___Workout_Tracking_System
 
         public List<ExerciseDTO> Exercises { get; set; } = new List<ExerciseDTO>();
     }
-
-    public class ExerciseDTO
-    {
-        public string Name { get; set; }
-        public string MuscleGroup { get; set; }
-        public bool EquipmentRequired { get; set; }
-    }
 }
