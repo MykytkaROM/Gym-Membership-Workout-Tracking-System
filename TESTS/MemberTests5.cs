@@ -1,5 +1,6 @@
 ﻿
 using Gym_Membership___Workout_Tracking_System;
+using System.Reflection;
 
 namespace TESTS
 {
@@ -89,11 +90,13 @@ namespace TESTS
         [Test]
         public void TestSaveAndLoadEmptyData()
         {
+            _ = new Member(2, DateTime.Now, "Basic", 0, MembershipStatus.active);
+
             Member.save(tempFile);
             Member.load(tempFile);
 
-            var loadedMember = Member.Members[0];
-            Assert.That(loadedMember.MemberID, Is.EqualTo(1));
+            var loadedMember = Member.Members[1];
+            Assert.That(loadedMember.MemberID, Is.EqualTo(2));
             Assert.That(loadedMember.MembershipType, Is.EqualTo("Basic"));
             Assert.That(loadedMember._ReadOnlyEntryRecords.Count, Is.EqualTo(0));
             Assert.That(loadedMember.BoughtMemberships.Count, Is.EqualTo(0));
@@ -132,7 +135,8 @@ namespace TESTS
         {
             var secondMember = new Member(2, new DateTime(2025, 1, 2), "Premium", 100, MembershipStatus.active);
             secondMember.AddEntryRecord(testEntry);
-            secondMember.AddBoughtMembership(testBoughtMembership);
+            
+            _ = new BoughtMembership(secondMember, testMembershipPlan, 0.1m, DateTime.Now, 3);
             
             Member.save(tempFile);
             Member.load(tempFile);

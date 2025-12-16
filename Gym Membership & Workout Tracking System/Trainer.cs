@@ -348,5 +348,12 @@ namespace Gym_Membership___Workout_Tracking_System
                 program.DeleteCreator(this);
             }
         }
+        
+        public static Trainer GetTrainerById(int id)
+        {
+            var trainer = _trainers.FirstOrDefault(t => t.TrainerID == id);
+            if (trainer == null) throw new ArgumentException("Trainer with this ID does not exist");
+            return trainer;
+        }
     }
 }
