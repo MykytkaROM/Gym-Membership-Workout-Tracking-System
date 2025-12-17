@@ -92,7 +92,14 @@ namespace Gym_Membership___Workout_Tracking_System
             BaseSalary = trainer.BaseSalary;
             YearOfExperience = trainer.YearOfExperience;
             _mentor = trainer.Mentor;
-            _trainees = trainer.Trainees;
+            if (trainer._trainees != null)
+            {
+                _trainees = new List<Trainer>(trainer._trainees);
+            }
+            else
+            {
+                _trainees = null;
+            }
         }
         public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience) 
         {
@@ -114,7 +121,7 @@ namespace Gym_Membership___Workout_Tracking_System
                     BaseSalary = m.BaseSalary,
                     YearOfExpirience = m.YearOfExperience,
                     MentorID = m.Mentor?.TrainerID,
-                    TraineeIDs = m.Trainees.Select(t => t.TrainerID).ToList()
+                    TraineeIDs = m._trainees?.Select(t => t.TrainerID).ToList()
                 })
                 .ToList();
 
@@ -173,26 +180,10 @@ namespace Gym_Membership___Workout_Tracking_System
         }
 
         private Trainer? _mentor;
-        public Trainer Mentor => _mentor;
+        public Trainer? Mentor => _mentor;
 
-        private List<Trainer> _trainees;
-        public List<Trainer> Trainees
-        {
-            get
-            {
-                if (_trainees == null)
-                {
-                    return new List<Trainer>();
-                }
-                List<Trainer> copy = new List<Trainer>(_trainees.Count);
-
-                _trainees.ForEach((item) =>
-                {
-                    copy.Add(new Trainer(item));
-                });
-                return copy;
-            }
-        }
+        private List<Trainer>? _trainees;
+        public IReadOnlyList<Trainer>? Trainees => _trainees?.AsReadOnly();
 
         public void AddMentor(Trainer mentor) 
         {
@@ -200,7 +191,7 @@ namespace Gym_Membership___Workout_Tracking_System
             if (mentor == null) throw new ArgumentNullException("Mentor should be not null");
             if (mentor.Equals(this)) throw new ArgumentException("Trainer cannot mentor himself");
             _mentor = mentor;
-            if (!mentor.Trainees.Contains(this)) 
+            if (mentor._trainees == null || !mentor._trainees.Contains(this))
             {
                 mentor.AddTrainee(this);
             }
@@ -217,12 +208,12 @@ namespace Gym_Membership___Workout_Tracking_System
             if (_mentor == null) throw new ArgumentNullException("Mentor should be specified to delete it");
             if (mentor == null) throw new ArgumentNullException("Mentor should be not null");
             if (!_mentor.Equals(mentor)) throw new ArgumentException("Mentor specified is different from mentor in this trainee");
-            _mentor = null;
-            if (mentor.Trainees.Contains(this)) 
+            
+            if (mentor._trainees.Contains(this)) 
             {
                 mentor.DeleteTrainee(this);
             }
-            
+            _mentor = null;
         }
         public void AddTrainee(Trainer trainee) 
         {
