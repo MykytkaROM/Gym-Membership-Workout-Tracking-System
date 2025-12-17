@@ -215,7 +215,14 @@ namespace Gym_Membership___Workout_Tracking_System
                         Discount = b.Discount,
                         DateOfPurchase = b.DateOfPurchase,
                         Expires = b.Expires,
-                        PlanName = b.Plan.Name
+                        Plan = new MembershipPlanDTO
+                        {
+                            Name = b.Plan.Name,
+                            DurationMonths = b.Plan.DurationMonths,
+                            Price = b.Plan.Price,
+                            DiscountRate = b.Plan.DiscountRate,
+                            Benefits = b.Plan.Benefits
+                        }
                     }).ToList()
 
                 })
@@ -259,7 +266,17 @@ namespace Gym_Membership___Workout_Tracking_System
                 
                 foreach (var boughtMembershipDTO in dto.BoughtMemberships)
                 {
-                    var plan = MembershipPlan.GetByName(boughtMembershipDTO.PlanName);
+                    var p = boughtMembershipDTO.Plan ?? throw new ArgumentNullException("Plan data is missing in BoughtMembershipDTO.");
+
+                    var plan = new MembershipPlan(
+                        p.Name,
+                        p.DurationMonths,
+                        p.Price,
+                        p.DiscountRate,
+                        p.Benefits,
+                        false
+                    );
+
                     _ = new BoughtMembership(member, plan, boughtMembershipDTO.Discount, boughtMembershipDTO.DateOfPurchase, boughtMembershipDTO.Expires);
                 }
             }

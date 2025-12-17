@@ -95,7 +95,7 @@ namespace TESTS
             Member.save(tempFile);
             Member.load(tempFile);
 
-            var loadedMember = Member.Members[1];
+            var loadedMember = Member.Members.Single(m => m.MemberID == 2);
             Assert.That(loadedMember.MemberID, Is.EqualTo(2));
             Assert.That(loadedMember.MembershipType, Is.EqualTo("Basic"));
             Assert.That(loadedMember._ReadOnlyEntryRecords.Count, Is.EqualTo(0));
@@ -133,19 +133,19 @@ namespace TESTS
         [Test]
         public void TestSaveAndLoadMultipleMembers()
         {
-            var secondMember = new Member(2, new DateTime(2025, 1, 2), "Premium", 100, MembershipStatus.active);
+            var secondMember = new Member(2, new DateTime(2025, 1, 2), "Gold", 100, MembershipStatus.active);
             secondMember.AddEntryRecord(testEntry);
-            
-            _ = new BoughtMembership(secondMember, testMembershipPlan, 0.1m, DateTime.Now, 3);
-            
+
+            var planSnapshot = new MembershipPlan("Gold", 1, 150, 0.1m, "Gym access", false);
+            _ = new BoughtMembership(secondMember, planSnapshot, 0.1m, DateTime.Now, 3);
+
             Member.save(tempFile);
             Member.load(tempFile);
 
             var loadedMembers = Member.Members;
-    
-            
+
             Assert.That(loadedMembers.Count, Is.EqualTo(2));
-            Assert.That(loadedMembers[1].MemberID, Is.EqualTo(2));
+            Assert.That(loadedMembers.Any(m => m.MemberID == 2), Is.True);
         }
         
         [TearDown]

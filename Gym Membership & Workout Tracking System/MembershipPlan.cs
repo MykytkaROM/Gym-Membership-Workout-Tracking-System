@@ -122,24 +122,29 @@ namespace Gym_Membership___Workout_Tracking_System
             Benefits = other.Benefits;
         }
         public MembershipPlan(string name, int durationMonths, decimal price, decimal? discountRate, string benefits)
+            : this(name, durationMonths, price, discountRate, benefits, true)
+        {
+        }
+        
+        public MembershipPlan(string name, int durationMonths, decimal price, decimal? discountRate, string benefits, bool addToExtent)
         {
             Name = name;
             DurationMonths = durationMonths;
             Price = price;
             DiscountRate = discountRate;
             Benefits = benefits;
-            addMembershipPlan(this);
+
+            if (addToExtent)
+                addMembershipPlan(this);
         }
         private static void addMembershipPlan(MembershipPlan membershipPlan) 
         {
-            if (_membershipPlans.Contains(membershipPlan) )
-            {
-                throw new ArgumentException("Value is already in the list");
-            }
             if (membershipPlan == null)
-            {
                 throw new ArgumentNullException("Value must be specified");
-            }
+
+            if (_membershipPlans.Contains(membershipPlan))
+                throw new ArgumentException("Value is already in the list");
+
             _membershipPlans.Add(membershipPlan);
         }
         
@@ -199,8 +204,8 @@ namespace Gym_Membership___Workout_Tracking_System
             }
         }
         
-        private readonly List<BoughtMembership> _boughtMemberships = new List<BoughtMembership>();
-        public List<BoughtMembership> BoughtMemberships => new List<BoughtMembership>(_boughtMemberships);
+        private BoughtMembership _boughtMembership;
+        public BoughtMembership BoughtMembership => _boughtMembership;
 
         public void AddBoughtMembership(BoughtMembership boughtMembership)
         {
@@ -214,24 +219,33 @@ namespace Gym_Membership___Workout_Tracking_System
             boughtMembership.RemoveBoughtMembership(this);
         }
 
-        public void LinkBoughtMembership(BoughtMembership boughtMembership)
+        internal void LinkBoughtMembership(BoughtMembership boughtMembership)
         {
             if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
-            if (_boughtMemberships.Contains(boughtMembership)) return;
-            _boughtMemberships.Add(boughtMembership);
+
+            if (_boughtMembership != null)
+            {
+                if (ReferenceEquals(_boughtMembership, boughtMembership)) return;
+                throw new InvalidOperationException("This MembershipPlan is already linked to another BoughtMembership.");
+            }
+
+            _boughtMembership = boughtMembership;
         }
 
-        public void UnlinkBoughtMembership(BoughtMembership boughtMembership)
+        internal void UnlinkBoughtMembership(BoughtMembership boughtMembership)
         {
             if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
-            _boughtMemberships.Remove(boughtMembership);
+
+            if (!ReferenceEquals(_boughtMembership, boughtMembership))
+                throw new InvalidOperationException("This MembershipPlan is not linked to this BoughtMembership.");
+
+            _boughtMembership = null;
         }
 
-        public bool HasBoughtMembership(BoughtMembership boughtMembership)
+        internal bool HasBoughtMembership(BoughtMembership boughtMembership)
         {
             if (boughtMembership == null) throw new ArgumentNullException(nameof(boughtMembership));
-            return _boughtMemberships.Contains(boughtMembership);
+            return ReferenceEquals(_boughtMembership, boughtMembership);
         }
-
     }
 }

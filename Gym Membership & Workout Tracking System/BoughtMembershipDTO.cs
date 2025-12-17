@@ -5,5 +5,6 @@ public class BoughtMembershipDTO
     public decimal Discount { get; set; }
     public DateTime DateOfPurchase { get; set; }
     public int Expires { get; set; }
-    public string PlanName { get; set; }
+    
+    public MembershipPlanDTO Plan { get; set; }
 }
