@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Gym_Membership___Workout_Tracking_System.DTO;
 
 namespace Gym_Membership___Workout_Tracking_System
 {
@@ -152,6 +153,12 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 _trainees = null;
             }
+            
+            if (trainer._workoutPrograms != null)
+            {
+                _workoutPrograms = new List<WorkoutProgram>(trainer._workoutPrograms);
+            }
+
             User = trainer.User;
         }
         public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, User user) 

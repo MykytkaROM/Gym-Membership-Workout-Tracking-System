@@ -112,4 +112,52 @@ public class ExerciseTest
         Assert.IsFalse((bool)containsExercise.Invoke(p, new object[] { e1 }));
         Assert.IsFalse((bool)containsProgram.Invoke(e1, new object[] { p }));
     }
+    
+    [Test]
+    public void Save_ShouldCreateJsonFile()
+    {
+        var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Exercises_test_save.json");
+
+        new Exercise("Bench Press", "Chest", true);
+        new Exercise("Plank", "Core", false);
+
+        Exercise.save(path);
+
+        Assert.IsTrue(File.Exists(path));
+        Assert.Greater(new FileInfo(path).Length, 5);
+    }
+    
+    [Test]
+    public void SaveLoad_ShouldRestoreExercises()
+    {
+        var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Exercises_test_roundtrip.json");
+
+        new Exercise("Squat", "Legs", true);
+        new Exercise("Pull-up", "Back", false);
+
+        Exercise.save(path);
+        
+        ResetStaticList(typeof(Exercise), "_exercises");
+
+        Exercise.load(path);
+
+        Assert.That(Exercise.Exercises.Count, Is.EqualTo(2));
+
+        Assert.IsTrue(Exercise.Exists("Squat", "Legs", true));
+        Assert.IsTrue(Exercise.Exists("Pull-up", "Back", false));
+
+        var ex = Exercise.GetExercise("Pull-up", "Back", false);
+        Assert.That(ex.Name, Is.EqualTo("Pull-up"));
+        Assert.That(ex.MuscleGroup, Is.EqualTo("Back"));
+        Assert.That(ex.EquipmentRequired, Is.EqualTo(false));
+    }
+    
+    [Test]
+    public void Load_ShouldThrow_WhenFileDoesNotExist()
+    {
+        var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Exercises_file_does_not_exist.json");
+        if (File.Exists(path)) File.Delete(path);
+
+        Assert.Throws<FileNotFoundException>(() => Exercise.load(path));
+    }
 }

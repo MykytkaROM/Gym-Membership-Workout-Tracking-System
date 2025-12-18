@@ -9,6 +9,7 @@ public class WorkoutProgramTests
     public void SetUp()
     {
         ResetTrainerStaticList();
+        ResetWorkoutProgramStaticList();
     }
 
     private static void ResetTrainerStaticList()
@@ -17,6 +18,13 @@ public class WorkoutProgramTests
         var f = typeof(Trainer).GetField("_trainers", BindingFlags.NonPublic | BindingFlags.Static);
         if (f == null) throw new Exception("Trainer._trainers field not found (name changed?)");
         f.SetValue(null, new List<Trainer>());
+    }
+    
+    private static void ResetWorkoutProgramStaticList()
+    {
+        var f = typeof(WorkoutProgram).GetField("_workoutPrograms", BindingFlags.NonPublic | BindingFlags.Static);
+        if (f == null) throw new Exception("WorkoutProgram._workoutPrograms field not found (name changed?)");
+        f.SetValue(null, new List<WorkoutProgram>());
     }
 
     private static Trainer NewTrainer(int id, string spec = "Strength")
@@ -102,4 +110,64 @@ public class WorkoutProgramTests
 
         Assert.AreEqual(1, count);
     }
+    
+    [Test]
+    public void SaveLoad_CreatorAndBidirectionalLink()
+    {
+        var t1 = NewTrainer(1);
+        var t2 = NewTrainer(2);
+
+        var p1 = new WorkoutProgram("Plan A", "Gain muscle", "Easy", 4, t1);
+        var p2 = new WorkoutProgram("Plan B", "Feet loss", "Hard", 6, t2);
+
+        var trainersPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Trainers_test.json");
+        var programsPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "WorkoutPrograms_test.json");
+
+        Trainer.save(trainersPath);
+        WorkoutProgram.Save(programsPath);
+
+        ResetTrainerStaticList();
+        ResetWorkoutProgramStaticList();
+
+        Trainer.load(trainersPath);
+        WorkoutProgram.Load(programsPath);
+
+        Assert.That(WorkoutProgram.WorkoutPrograms.Count, Is.EqualTo(2));
+
+        var loadedP1 = WorkoutProgram.WorkoutPrograms.First(p => p.Name == "Plan A");
+        Assert.AreEqual(1, loadedP1.Creator.TrainerID);
+
+        var realT1 = Trainer.GetTrainerById(1);
+        Assert.IsTrue(realT1.WorkoutPrograms.Any(p => p.Name == "Plan A"));
+    }
+
+    [Test]
+    public void Load_ShouldThrow_WhenTrainersNotLoaded()
+    {
+        var t1 = NewTrainer(1);
+        var p1 = new WorkoutProgram("Plan A", "Gain muscle", "Easy", 4, t1);
+
+        var programsPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "WorkoutPrograms_missing_trainers.json");
+        WorkoutProgram.Save(programsPath);
+
+        ResetTrainerStaticList();
+        ResetWorkoutProgramStaticList();
+
+        var ex = Assert.Throws<ArgumentException>(() => WorkoutProgram.Load(programsPath));
+        Assert.That(ex.Message, Does.Contain("Trainer with this ID does not exist"));
+    }
+
+    [Test]
+    public void Save_ShouldCreateFile()
+    {
+        var t1 = NewTrainer(1);
+        var p1 = new WorkoutProgram("Plan A", "G", "D", 4, t1);
+
+        var programsPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "WorkoutPrograms_file_test.json");
+        WorkoutProgram.Save(programsPath);
+
+        Assert.IsTrue(File.Exists(programsPath));
+        Assert.Greater(new FileInfo(programsPath).Length, 5);
+    }
+
 }

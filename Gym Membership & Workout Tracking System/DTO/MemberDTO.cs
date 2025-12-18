@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gym_Membership___Workout_Tracking_System.DTO;
 
-namespace Gym_Membership___Workout_Tracking_System
+namespace Gym_Membership___Workout_Tracking_System.DTO
 {
     public class MemberDTO
     {

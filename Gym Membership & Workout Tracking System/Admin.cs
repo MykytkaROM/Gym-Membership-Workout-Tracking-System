@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Gym_Membership___Workout_Tracking_System.DTO;
 
 namespace Gym_Membership___Workout_Tracking_System;
 
