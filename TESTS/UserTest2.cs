@@ -10,7 +10,7 @@ namespace TESTS
         {
             var temp = Path.GetTempFileName();
             File.WriteAllText(temp, "[]");
-            User.load(temp);
+            User.Load(temp);
         }
         
         [Test]
@@ -147,7 +147,7 @@ namespace TESTS
             var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".json");
             Assert.False(File.Exists(path));
 
-            Assert.Throws<FileNotFoundException>(() => User.load(path));
+            Assert.Throws<FileNotFoundException>(() => User.Load(path));
         }
 
         [Test]
@@ -156,7 +156,7 @@ namespace TESTS
             var temp = Path.GetTempFileName();
             File.WriteAllText(temp, "[]");
 
-            User.load(temp);
+            User.Load(temp);
 
             var extent = User.Users;
             Assert.That(extent.Count, Is.EqualTo(0));
@@ -173,8 +173,8 @@ namespace TESTS
             var u1 = new User("Mykyta Romanchuk", "mykyta@example.com", "1111111", addr1);
             var u2 = new User("Denys Babenko", "denys@example.com", "2222222", addr2);
 
-            User.save(temp);
-            User.load(temp);
+            User.Save(temp);
+            User.Load(temp);
 
             var users = User.Users;
 

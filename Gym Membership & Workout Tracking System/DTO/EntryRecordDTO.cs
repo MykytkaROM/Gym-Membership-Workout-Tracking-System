@@ -10,7 +10,6 @@ namespace Gym_Membership___Workout_Tracking_System.DTO
     {
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-
-        public Member Member { get; set; }
+        public MemberDTO Member { get; set; }
     }
 }

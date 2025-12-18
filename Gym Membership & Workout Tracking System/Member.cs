@@ -11,6 +11,7 @@ namespace Gym_Membership___Workout_Tracking_System
 {
     public class Member
     {
+        public Member() { }
         private int _memberID;//memberID : int
         public int MemberID
         {
@@ -25,8 +26,19 @@ namespace Gym_Membership___Workout_Tracking_System
             }
         }
         private DateTime _joinDate;//joinDate : DateTime
-        public DateTime JoinDate => _joinDate;
-        
+        public DateTime JoinDate
+        {
+            get => _joinDate;
+            set
+            {
+                if (value > DateTime.Now)
+                {
+                    throw new ArgumentException("JoinDate cannot be negative");
+                }
+                _joinDate = value;
+            }
+        }
+
         private string _membershipType;//membershipType : string
         public string MembershipType
         {

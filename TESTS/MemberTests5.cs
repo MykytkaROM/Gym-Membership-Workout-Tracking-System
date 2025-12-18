@@ -18,7 +18,7 @@ namespace TESTS
         {
             tempFile = Path.GetTempFileName();
             File.WriteAllText(tempFile, "[]");
-            User.load(tempFile);
+            User.Load(tempFile);
             Member.Load(tempFile);
             testUser = new User("John", "Pork@mail.com", "9871230", new Address("Porkvile", "Porkstreet", 67));
             testMember = new Member(1, new DateTime(2025, 1, 1), "Basic", 0, MembershipStatus.active, testUser);

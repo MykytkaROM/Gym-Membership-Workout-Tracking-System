@@ -10,7 +10,7 @@ namespace TESTS
             var temp = Path.GetTempFileName();
             File.WriteAllText(temp, "[]");
             MembershipPlan.load(temp);
-            User.load(temp);
+            User.Load(temp);
         }
 
         [Test]

@@ -101,13 +101,25 @@ public class Admin
         Permissions = other.Permissions;
         User = other.User;
     }
-    public static void save(string path = "admins.json")
+    public static void Save(string path = "admins.json")
     {
         var dtoList = _admins
             .Select(m => new AdminDTO
             {
                 AdminLevel = m.AdminLevel,
-                Permissions = m.Permissions
+                Permissions = m.Permissions,
+                User = new UserDTO
+                {
+                    name = m.User.Name,
+                    email = m.User.Email,
+                    phoneNumber = m.User.PhoneNumber,
+                    address = new AddressDTO
+                    {
+                        City = m.User.Address.City,
+                        Street = m.User.Address.Street,
+                        Building = m.User.Address.Building
+                    }
+                }
             })
             .ToList();
 
@@ -117,7 +129,7 @@ public class Admin
         Console.WriteLine("Admins saved to " + path);
     }
 
-    public static void load(string path = "admins.json")
+    public static void Load(string path = "admins.json")
     {
         if (!File.Exists(path))
             throw new FileNotFoundException($"File not found: {path}");
@@ -131,8 +143,22 @@ public class Admin
 
         foreach (var dto in dtoList)
         {
+            if (dto.User == null) throw new ArgumentNullException("User data is missing in JSON");
+            User user = new User();
+            user.Name = dto.User.name;
+            user.Email = dto.User.email;
+            user.PhoneNumber = dto.User.phoneNumber;
+                
+            if (dto.User.address != null)
+            {
+                user.Address = new Address(
+                    dto.User.address.City,
+                    dto.User.address.Street,
+                    dto.User.address.Building
+                );
+            }
             new Admin(
-                dto.AdminLevel, dto.Permissions, dto.User
+                dto.AdminLevel, dto.Permissions, user
             );
         }
     }

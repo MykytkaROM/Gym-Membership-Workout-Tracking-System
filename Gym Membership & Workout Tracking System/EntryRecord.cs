@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Gym_Membership___Workout_Tracking_System.DTO;
 
 namespace Gym_Membership___Workout_Tracking_System;
 
@@ -89,13 +90,33 @@ public class EntryRecord
         EndTime = entryRecord.EndTime;
         _member = entryRecord.Member;
     }
-   /* public static void save(string path = "EntryRecords.json")
+   public static void Save(string path = "EntryRecords.json")
     {
         var dtoList = _entries
             .Select(m => new EntryRecordDTO
             {
                 StartTime = m.StartTime,
                 EndTime = m.EndTime,
+                Member = new MemberDTO
+                { 
+                    MemberID = m.Member.MemberID,
+                    JoinDate = m.Member.JoinDate,
+                    MembershipType = m.Member.MembershipType,
+                    TotalPoints = m.Member.TotalPoints,
+                    MembershipStatus = m.Member.MembershipStatus,
+                    User = new UserDTO
+                    {
+                        name = m.Member.User.Name,
+                        email = m.Member.User.Email,
+                        phoneNumber = m.Member.User.PhoneNumber,
+                        address = new AddressDTO
+                        {
+                            City = m.Member.User.Address.City,
+                            Street = m.Member.User.Address.Street,
+                            Building = m.Member.User.Address.Building
+                        }
+                    }
+                }
 
             })
             .ToList();
@@ -106,7 +127,7 @@ public class EntryRecord
         Console.WriteLine("EntryRecords saved to " + path);
     }
 
-    public static void load(string path = "EntryRecords.json")
+    public static void Load(string path = "EntryRecords.json")
     {
         if (!File.Exists(path))
             throw new FileNotFoundException($"File not found: {path}");
@@ -120,13 +141,40 @@ public class EntryRecord
 
         foreach (var dto in dtoList)
         {
+            if (dto.Member == null) throw new ArgumentNullException("Member data is missing in JSON");
+            Member member = new Member();
+            member.MemberID = dto.Member.MemberID;
+            member.JoinDate = dto.Member.JoinDate;
+            member.MembershipType = dto.Member.MembershipType;
+            member.TotalPoints = dto.Member.TotalPoints;
+            member.MembershipStatus = dto.Member.MembershipStatus;
+            if (dto.Member.User != null)
+            {
+                Address address = null;
+                if (dto.Member.User.address != null)
+                {
+                    address = new Address(
+                        dto.Member.User.address.Street,
+                        dto.Member.User.address.City,
+                        dto.Member.User.address.Building
+                    );
+                }
+                
+                member.User = new User(
+                    dto.Member.User.name,
+                    dto.Member.User.email,
+                    dto.Member.User.phoneNumber,
+                    address
+                );
+            }
+            
             new EntryRecord(
                dto.StartTime,
                 dto.EndTime,
-                dto.Member
+                member
             );
         }
-    }*/
+    }
     private static void AddEntryRecordsEXT(EntryRecord entryRecord)
     {
 
