@@ -101,6 +101,12 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 _trainees = null;
             }
+            
+            if (trainer._workoutPrograms != null)
+            {
+                _workoutPrograms = new List<WorkoutProgram>(trainer._workoutPrograms);
+            }
+
         }
         public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience) 
         {

@@ -60,7 +60,7 @@ public class WorkoutProgram
     public List<Exercise> Exercises => _exercises.ToList();
     
     private static List<WorkoutProgram> _workoutPrograms = new List<WorkoutProgram>();
-    public List<WorkoutProgram> WorkoutPrograms => _workoutPrograms.ToList();
+    public static List<WorkoutProgram> WorkoutPrograms => _workoutPrograms.ToList();
     
     private static void AddWorkoutProgramEXT(WorkoutProgram program)
     {
@@ -76,10 +76,11 @@ public class WorkoutProgram
         Goal = p.Goal;
         Difficulty = p.Difficulty;
         DurationWeeks = p.DurationWeeks;
+        _creator = null;
+        AddCreator(p.Creator);
 
-        _creator = p.Creator;
-
-        _exercises = p._exercises.Select(e => new Exercise(e)).ToList();
+        _exercises.Clear();
+        p._exercises.ForEach(e => _exercises.Add(new Exercise(e)));
     }
     
     public WorkoutProgram(string name, string goal, string difficulty, int durationWeeks, Trainer creator)
@@ -155,7 +156,7 @@ public class WorkoutProgram
         if (_exercises.Count < 1) throw new InvalidOperationException("WorkoutProgram must contain at least 1 exercise");
     }
     
-    public static void save(string path = "WorkoutPrograms.json")
+    public static void Save(string path = "WorkoutPrograms.json")
     {
         var dtoList = _workoutPrograms
             .Select(p => new WorkoutProgramsDTO
@@ -180,7 +181,7 @@ public class WorkoutProgram
         Console.WriteLine("WorkoutPrograms saved to " + path);
     }
 
-    public static void load(string path = "WorkoutPrograms.json")
+    public static void Load(string path = "WorkoutPrograms.json")
     {
         if (!File.Exists(path))
             throw new FileNotFoundException($"File not found: {path}");
@@ -208,7 +209,8 @@ public class WorkoutProgram
             {
                 foreach (var ex in dto.Exercises)
                 {
-                    program.AddExercise(new Exercise(ex.Name, ex.MuscleGroup, ex.EquipmentRequired));
+                    var exercise = new Exercise(ex.Name, ex.MuscleGroup, ex.EquipmentRequired);
+                    program.AddExercise(exercise);
                 }
             }
         }

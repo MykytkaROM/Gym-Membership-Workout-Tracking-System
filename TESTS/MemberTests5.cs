@@ -18,7 +18,7 @@ namespace TESTS
             tempFile = Path.GetTempFileName();
             File.WriteAllText(tempFile, "[]");
             User.load(tempFile);
-            Member.load(tempFile);
+            Member.Load(tempFile);
             testMember = new Member(1, new DateTime(2025, 1, 1), "Basic", 0, MembershipStatus.active);
             testMembershipPlan = new MembershipPlan("Gold", 3, 150, 0.1m, "Gym access");
             testBoughtMembership = new BoughtMembership(testMember, testMembershipPlan, 0.1m, new DateTime(2025, 1, 1), 3);
@@ -56,9 +56,9 @@ namespace TESTS
             testMember.AddEntryRecord(testEntry);
             testMember.AddBoughtMembership(testBoughtMembership);
 
-            Member.save(tempFile);
+            Member.Save(tempFile);
 
-            Member.load(tempFile);
+            Member.Load(tempFile);
 
             var loadedMember = Member.Members[0];
             Assert.That(loadedMember.MemberID, Is.EqualTo(1));
@@ -92,8 +92,8 @@ namespace TESTS
         {
             _ = new Member(2, DateTime.Now, "Basic", 0, MembershipStatus.active);
 
-            Member.save(tempFile);
-            Member.load(tempFile);
+            Member.Save(tempFile);
+            Member.Load(tempFile);
 
             var loadedMember = Member.Members.Single(m => m.MemberID == 2);
             Assert.That(loadedMember.MemberID, Is.EqualTo(2));
@@ -139,8 +139,8 @@ namespace TESTS
             var planSnapshot = new MembershipPlan("Gold", 1, 150, 0.1m, "Gym access", false);
             _ = new BoughtMembership(secondMember, planSnapshot, 0.1m, DateTime.Now, 3);
 
-            Member.save(tempFile);
-            Member.load(tempFile);
+            Member.Save(tempFile);
+            Member.Load(tempFile);
 
             var loadedMembers = Member.Members;
 

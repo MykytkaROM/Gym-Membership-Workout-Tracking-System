@@ -200,7 +200,7 @@ namespace Gym_Membership___Workout_Tracking_System
             }
 
         }
-        public static void save(string path = "Member.json")
+        public static void Save(string path = "Member.json")
         {
             var dtoList = _members
                 .Select(m => new MemberDTO
@@ -240,7 +240,7 @@ namespace Gym_Membership___Workout_Tracking_System
         }
         
 
-        public static void load(string path = "Member.json")
+        public static void Load(string path = "Member.json")
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException($"File not found: {path}");
