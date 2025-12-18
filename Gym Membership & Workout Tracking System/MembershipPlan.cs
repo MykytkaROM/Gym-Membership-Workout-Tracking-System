@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Gym_Membership___Workout_Tracking_System.DTO;
 
 namespace Gym_Membership___Workout_Tracking_System
 {

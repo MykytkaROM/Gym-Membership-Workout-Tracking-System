@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Gym_Membership___Workout_Tracking_System
+namespace Gym_Membership___Workout_Tracking_System.DTO
 {
     public class WorkoutProgramsDTO
     {
