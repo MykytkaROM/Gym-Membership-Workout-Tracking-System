@@ -108,9 +108,10 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 throw new ArgumentException("Entry record have different member specified");
             }
+            _EntryRecords.Remove(record.StartTime);
             if (record.Member.Equals(this))
             {
-                _EntryRecords.Remove(record.StartTime);
+                
                 record.RemoveMember(this);
             }
         }
@@ -188,10 +189,13 @@ namespace Gym_Membership___Workout_Tracking_System
                 throw new ArgumentException("Value is not in the list");
             }
             _members.Remove(member);
-            foreach (var(key,value) in member._EntryRecords) 
+            foreach (var value in member._EntryRecords.Values.ToList()) 
             {
                 value.RemoveMember(member);
-                EntryRecord.RemoveEntryRecordEXT(value);
+            }
+            foreach (var value in member.BoughtMemberships) 
+            {
+                value.RemoveBoughtMembership(member);
             }
 
         }

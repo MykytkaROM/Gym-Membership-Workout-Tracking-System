@@ -64,6 +64,9 @@ public class EntryRecord
             member.RemoveEntryRecord(this);
         }
         _member = null;
+        RemoveEntryRecordEXT(this);
+        
+        
     }
     
     private static List<EntryRecord> _entries = new List<EntryRecord>();
@@ -137,19 +140,14 @@ public class EntryRecord
         }
         _entries.Add(entryRecord);
     }
-    public static void RemoveEntryRecordEXT(EntryRecord entryRecord) 
+    private static void RemoveEntryRecordEXT(EntryRecord entryRecord) 
     {
         if (entryRecord==null) 
         {
             throw new ArgumentNullException("Entry record cannot be null");
         }
         _entries.Remove(entryRecord);
-        if (entryRecord.Member == null) 
-        {
-            throw new ArgumentNullException("This entry record does not have member");
-        }
-        entryRecord.Member.RemoveEntryRecord(entryRecord);
-        entryRecord._member = null;
+        
         
     }
 
