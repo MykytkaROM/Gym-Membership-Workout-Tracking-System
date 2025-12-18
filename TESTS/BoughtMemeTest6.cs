@@ -12,7 +12,7 @@ namespace TESTS{
         public void Setup()
         {
             typeof(Member).GetField("_members", BindingFlags.NonPublic | BindingFlags.Static).SetValue(null, new List<Member>());
-            testMember = new Member(1, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            testMember = new Member(1, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
             testPlan = new MembershipPlan("Gold", 3, 150, 0.1m, "Gym access");
         }
 
@@ -129,7 +129,7 @@ namespace TESTS{
         [Test]
         public void BoughtMembership_Creation_LinksMemberAndPlan()
         {
-            var m = new Member(101, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var m = new Member(101, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
             var p = new MembershipPlan("Gold", 1, 150, 0.1m, "Gym access", false);
 
             var bm = new BoughtMembership(m, p, 0.2m, new DateTime(2025, 1, 1), 1);
@@ -150,7 +150,7 @@ namespace TESTS{
         [Test]
         public void BoughtMembership_Delete_UnlinksMemberAndPlan()
         {
-            var m = new Member(102, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var m = new Member(102, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
             var p = new MembershipPlan("Silver", 1, 120, null, "Gym access", false);
 
             var bm = new BoughtMembership(m, p, 0.0m, DateTime.Now, 1);
@@ -167,7 +167,7 @@ namespace TESTS{
         [Test]
         public void Member_CanHaveMultipleBoughtMemberships()
         {
-            var m = new Member(103, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var m = new Member(103, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
 
             var p1 = new MembershipPlan("Gold-1", 1, 150, null, "Gym access", false);
             var p2 = new MembershipPlan("Gold-2", 1, 150, null, "Gym access", false);
@@ -186,8 +186,8 @@ namespace TESTS{
         [Test]
         public void MembershipPlan_CannotBeLinkedToTwoBoughtMemberships()
         {
-            var m1 = new Member(104, DateTime.Now, "Basic", 0, MembershipStatus.active);
-            var m2 = new Member(105, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var m1 = new Member(104, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
+            var m2 = new Member(105, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
 
             var p = new MembershipPlan("UniquePlan", 1, 150, null, "Gym access", false);
 
@@ -227,7 +227,7 @@ namespace TESTS{
             var bm0 = new BoughtMembership(testMember, testPlan, 0.0m, DateTime.Now, 1);
             Assert.That(bm0.Discount, Is.EqualTo(0.0m));
 
-            var m2 = new Member(2, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var m2 = new Member(2, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
             var p2 = new MembershipPlan("P2", 1, 150, null, "Gym", false);
             var bm1 = new BoughtMembership(m2, p2, 1.0m, DateTime.Now, 1);
             Assert.That(bm1.Discount, Is.EqualTo(1.0m));
@@ -284,7 +284,7 @@ namespace TESTS{
         public void BoughtMembership_AddMember_DifferentMember_Throws()
         {
             var bm = new BoughtMembership(testMember, testPlan, 0.1m, DateTime.Now, 1);
-            var other = new Member(99, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var other = new Member(99, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
 
             Assert.Throws<InvalidOperationException>(() => bm.AddBoughtMembership(other));
         }
@@ -293,7 +293,7 @@ namespace TESTS{
         public void BoughtMembership_RemoveMember_WrongMember_Throws()
         {
             var bm = new BoughtMembership(testMember, testPlan, 0.1m, DateTime.Now, 1);
-            var other = new Member(98, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var other = new Member(98, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
 
             Assert.Throws<InvalidOperationException>(() => bm.RemoveBoughtMembership(other));
         }
@@ -301,8 +301,8 @@ namespace TESTS{
         [Test]
         public void ReuseSamePlanInstance_AfterDelete_IsAllowed()
         {
-            var m1 = new Member(201, DateTime.Now, "Basic", 0, MembershipStatus.active);
-            var m2 = new Member(202, DateTime.Now, "Basic", 0, MembershipStatus.active);
+            var m1 = new Member(201, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
+            var m2 = new Member(202, DateTime.Now, "Basic", 0, MembershipStatus.active, new User());
             var p = new MembershipPlan("Reusable", 1, 150, null, "Gym", false);
 
             var bm1 = new BoughtMembership(m1, p, 0.1m, DateTime.Now, 1);

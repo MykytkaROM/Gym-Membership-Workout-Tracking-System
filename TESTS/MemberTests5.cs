@@ -11,6 +11,7 @@ namespace TESTS
         private string tempFile;
         private BoughtMembership testBoughtMembership;
         private MembershipPlan testMembershipPlan;
+        private User testUser;
 
         [SetUp]
         public void Setup()
@@ -19,7 +20,8 @@ namespace TESTS
             File.WriteAllText(tempFile, "[]");
             User.load(tempFile);
             Member.Load(tempFile);
-            testMember = new Member(1, new DateTime(2025, 1, 1), "Basic", 0, MembershipStatus.active);
+            testUser = new User("John", "Pork@mail.com", "9871230", new Address("Porkvile", "Porkstreet", 67));
+            testMember = new Member(1, new DateTime(2025, 1, 1), "Basic", 0, MembershipStatus.active, testUser);
             testMembershipPlan = new MembershipPlan("Gold", 3, 150, 0.1m, "Gym access");
             testBoughtMembership = new BoughtMembership(testMember, testMembershipPlan, 0.1m, new DateTime(2025, 1, 1), 3);
             testEntry = new EntryRecord(new DateTime(2025, 1, 1, 9, 0, 0), new DateTime(2025, 1, 1, 10, 0, 0));
@@ -55,6 +57,7 @@ namespace TESTS
         {
             testMember.AddEntryRecord(testEntry);
             testMember.AddBoughtMembership(testBoughtMembership);
+            testMember.AddUser(testUser);
 
             Member.Save(tempFile);
 
@@ -65,6 +68,10 @@ namespace TESTS
             Assert.That(loadedMember.MembershipType, Is.EqualTo("Basic"));
             Assert.That(loadedMember._ReadOnlyEntryRecords.Count, Is.EqualTo(1));
             Assert.That(loadedMember.BoughtMemberships.Count, Is.EqualTo(1));
+            Assert.That(loadedMember.User, Is.Not.Null);
+            Assert.That(loadedMember.User.Name, Is.EqualTo(testUser.Name));
+            Assert.That(loadedMember.User.Email, Is.EqualTo(testUser.Email));
+            Assert.That(loadedMember.User.PhoneNumber, Is.EqualTo(testUser.PhoneNumber));
         }
         
         [Test]
@@ -90,8 +97,8 @@ namespace TESTS
         [Test]
         public void TestSaveAndLoadEmptyData()
         {
-            _ = new Member(2, DateTime.Now, "Basic", 0, MembershipStatus.active);
-
+            _ = new Member(2, DateTime.Now, "Basic", 0, MembershipStatus.active, testUser);
+            
             Member.Save(tempFile);
             Member.Load(tempFile);
 
@@ -100,6 +107,7 @@ namespace TESTS
             Assert.That(loadedMember.MembershipType, Is.EqualTo("Basic"));
             Assert.That(loadedMember._ReadOnlyEntryRecords.Count, Is.EqualTo(0));
             Assert.That(loadedMember.BoughtMemberships.Count, Is.EqualTo(0));
+            Assert.That(loadedMember.User, Is.Not.Null);
         }
 
         [Test]
@@ -117,7 +125,7 @@ namespace TESTS
         [Test]
         public void TestRemoveEntryRecordWithNonMatchingMember()
         {
-            var differentMember = new Member(2, new DateTime(2025, 1, 1), "Silver", 0, MembershipStatus.active);
+            var differentMember = new Member(2, new DateTime(2025, 1, 1), "Silver", 0, MembershipStatus.active, new User());
             testEntry.AddMember(differentMember);
 
             Assert.Throws<ArgumentException>(() => testMember.RemoveEntryRecord(testEntry));
@@ -133,7 +141,7 @@ namespace TESTS
         [Test]
         public void TestSaveAndLoadMultipleMembers()
         {
-            var secondMember = new Member(2, new DateTime(2025, 1, 2), "Gold", 100, MembershipStatus.active);
+            var secondMember = new Member(2, new DateTime(2025, 1, 2), "Gold", 100, MembershipStatus.active, testUser);
             secondMember.AddEntryRecord(testEntry);
 
             var planSnapshot = new MembershipPlan("Gold", 1, 150, 0.1m, "Gym access", false);

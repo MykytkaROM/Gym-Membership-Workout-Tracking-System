@@ -28,7 +28,8 @@ public class TrainerTests
             "Strength",
             DateTime.Now,
             1000m,
-            5
+            5,
+            new User()
         );
     }
 
@@ -147,8 +148,8 @@ public class TrainerTests
         mentor.AddTrainee(trainee1);
         mentor.AddTrainee(trainee2);
 
-        Trainer.save(_testFilePath);
-        Trainer.load(_testFilePath);
+        Trainer.Save(_testFilePath);
+        Trainer.Load(_testFilePath);
 
         var loadedMentor = Trainer.GetTrainerById(100);
         var loadedTrainee1 = Trainer.GetTrainerById(101);
@@ -175,8 +176,8 @@ public class TrainerTests
 
         trainee.AddMentor(mentor);
 
-        Trainer.save(_testFilePath);
-        Trainer.load(_testFilePath);
+        Trainer.Save(_testFilePath);
+        Trainer.Load(_testFilePath);
 
         var loadedMentor = Trainer.GetTrainerById(200);
         var loadedTrainee = Trainer.GetTrainerById(201);
@@ -192,8 +193,8 @@ public class TrainerTests
     {
         var trainer = CreateTrainer(300);
 
-        Trainer.save(_testFilePath);
-        Trainer.load(_testFilePath);
+        Trainer.Save(_testFilePath);
+        Trainer.Load(_testFilePath);
 
         var loadedTrainer = Trainer.GetTrainerById(300);
 

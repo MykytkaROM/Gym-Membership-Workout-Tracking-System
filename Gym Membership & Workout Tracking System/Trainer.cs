@@ -171,7 +171,7 @@ namespace Gym_Membership___Workout_Tracking_System
             User = user;
             AddTrainerEXT(this);
         }
-        public static void save(string path = "Trainers.json")
+        public static void Save(string path = "Trainers.json")
         {
             var dtoList = _trainers
                 .Select(m => new TrainersDTO
@@ -181,6 +181,18 @@ namespace Gym_Membership___Workout_Tracking_System
                     HireDate = m.HireDate,
                     BaseSalary = m.BaseSalary,
                     YearOfExpirience = m.YearOfExperience,
+                    User = new UserDTO
+                    {
+                        name = m.User.Name,
+                        email = m.User.Email,
+                        phoneNumber = m.User.PhoneNumber,
+                        address = new AddressDTO
+                        {
+                            City = m.User.Address.City,
+                            Street = m.User.Address.Street,
+                            Building = m.User.Address.Building
+                        }
+                    },
                     MentorID = m.Mentor?.TrainerID,
                     TraineeIDs = m._trainees?.Select(t => t.TrainerID).ToList()
                 })
@@ -192,7 +204,7 @@ namespace Gym_Membership___Workout_Tracking_System
             Console.WriteLine("Trainers saved to " + path);
         }
 
-        public static void load(string path = "Trainers.json")
+        public static void Load(string path = "Trainers.json")
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException($"File not found: {path}");
@@ -207,13 +219,29 @@ namespace Gym_Membership___Workout_Tracking_System
 
             foreach (var dto in dtoList)
             {
+                if (dto.User == null) throw new ArgumentNullException("User data is missing in JSON");
+                
+                User user = new User();
+                user.Name = dto.User.name;
+                user.Email = dto.User.email;
+                user.PhoneNumber = dto.User.phoneNumber;
+                
+                if (dto.User.address != null)
+                {
+                    user.Address = new Address(
+                        dto.User.address.City,
+                        dto.User.address.Street,
+                        dto.User.address.Building
+                    );
+                }
+                
                 Trainer newTrainer = new Trainer(
                     dto.TrainerID,
                     dto.Specialization,
                     dto.HireDate,
                     dto.BaseSalary,
                     dto.YearOfExpirience,
-                    dto.User
+                    user
                 );
                 trainerMap.Add(newTrainer.TrainerID, newTrainer);
             }

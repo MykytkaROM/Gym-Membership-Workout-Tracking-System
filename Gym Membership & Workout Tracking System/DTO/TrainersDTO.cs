@@ -15,6 +15,6 @@ namespace Gym_Membership___Workout_Tracking_System.DTO
         public int YearOfExpirience { get; set; }
         public int? MentorID { get; set; }
         public List<int> TraineeIDs { get; set; } = new List<int>();
-        public User User { get; set; }
+        public UserDTO User { get; set; }
     }
 }

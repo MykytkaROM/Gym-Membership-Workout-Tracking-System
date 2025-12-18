@@ -5,16 +5,17 @@ namespace TESTS;
 
 public class WorkoutProgramTests
 {
+    private static User testUser;
     [SetUp]
     public void SetUp()
     {
+        testUser = new User("John", "Pork@mail.com", "9871230", new Address("Porkvile", "Porkstreet", 67));
         ResetTrainerStaticList();
         ResetWorkoutProgramStaticList();
     }
 
     private static void ResetTrainerStaticList()
     {
-        // Trainer has: private static List<Trainer> _trainers
         var f = typeof(Trainer).GetField("_trainers", BindingFlags.NonPublic | BindingFlags.Static);
         if (f == null) throw new Exception("Trainer._trainers field not found (name changed?)");
         f.SetValue(null, new List<Trainer>());
@@ -28,7 +29,7 @@ public class WorkoutProgramTests
     }
 
     private static Trainer NewTrainer(int id, string spec = "Strength")
-        => new Trainer(id, spec, new DateTime(2024, 1, 1), 1000m, 2);
+        => new Trainer(id, spec, new DateTime(2024, 1, 1), 1000m, 2, testUser);
     
     [Test]
     public void Constructor_ShouldSetProperties_AndLinkCreatorBothWays()
@@ -123,13 +124,13 @@ public class WorkoutProgramTests
         var trainersPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Trainers_test.json");
         var programsPath = Path.Combine(TestContext.CurrentContext.WorkDirectory, "WorkoutPrograms_test.json");
 
-        Trainer.save(trainersPath);
+        Trainer.Save(trainersPath);
         WorkoutProgram.Save(programsPath);
 
         ResetTrainerStaticList();
         ResetWorkoutProgramStaticList();
 
-        Trainer.load(trainersPath);
+        Trainer.Load(trainersPath);
         WorkoutProgram.Load(programsPath);
 
         Assert.That(WorkoutProgram.WorkoutPrograms.Count, Is.EqualTo(2));

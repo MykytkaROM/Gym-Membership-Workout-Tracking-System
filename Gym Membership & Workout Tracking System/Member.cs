@@ -249,6 +249,18 @@ namespace Gym_Membership___Workout_Tracking_System
                     MembershipType = m.MembershipType,
                     TotalPoints = m.TotalPoints,
                     MembershipStatus = m.MembershipStatus,
+                    User = new UserDTO
+                    {
+                        name = m.User.Name,
+                        email = m.User.Email,
+                        phoneNumber = m.User.PhoneNumber,
+                        address = new AddressDTO
+                        {
+                            City = m.User.Address.City,
+                            Street = m.User.Address.Street,
+                            Building = m.User.Address.Building
+                        }
+                    },
                     EntryRecords = m._ReadOnlyEntryRecords.Values.Select(e => new EntryRecordDTO
                     {
                         StartTime = e.StartTime,
@@ -293,13 +305,29 @@ namespace Gym_Membership___Workout_Tracking_System
 
             foreach (var dto in dtoList)
             {
+                if (dto.User == null) throw new ArgumentNullException("User data is missing in JSON");
+
+                User user = new User();
+                user.Name = dto.User.name;
+                user.Email = dto.User.email;
+                user.PhoneNumber = dto.User.phoneNumber;
+                
+                if (dto.User.address != null)
+                {
+                    user.Address = new Address(
+                        dto.User.address.City,
+                        dto.User.address.Street,
+                        dto.User.address.Building
+                    );
+                }
+
                 var member = new Member(
-                   dto.MemberID,
-                   dto.JoinDate,
-                   dto.MembershipType,
-                   dto.TotalPoints,
-                   dto.MembershipStatus,
-                   dto.User
+                    dto.MemberID,
+                    dto.JoinDate,
+                    dto.MembershipType,
+                    dto.TotalPoints,
+                    dto.MembershipStatus,
+                    user
                 );
                 member._EntryRecords = new Dictionary<DateTime, EntryRecord>();
                 

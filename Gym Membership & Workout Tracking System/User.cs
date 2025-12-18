@@ -349,7 +349,12 @@ namespace Gym_Membership___Workout_Tracking_System
                     name = m.Name,
                     email = m.Email,
                     phoneNumber = m.PhoneNumber,
-                    address = m.Address,
+                    address = new AddressDTO
+                    {
+                        City = m.Address.City,
+                        Street = m.Address.Street,
+                        Building = m.Address.Building
+                    }
                 })
                 .ToList();
 
@@ -373,11 +378,18 @@ namespace Gym_Membership___Workout_Tracking_System
 
             foreach (var dto in dtoList)
             {
+                if (dto.address == null) throw new ArgumentNullException("Address data is missing in JSON");
+                
+                Address address = new Address();
+                address.City = dto.address.City;
+                address.Street = dto.address.Street;
+                address.Building = dto.address.Building;
+                
                 new User(
                     dto.name, 
                     dto.email, 
                     dto.phoneNumber,
-                    dto.address
+                    address
                 );
             }
         }

@@ -24,7 +24,7 @@ public class ExerciseTest
     }
     
     private static Trainer NewTrainer(int id, string spec = "Strength")
-        => new Trainer(id, spec, new DateTime(2024, 1, 1), 1000m, 2);
+        => new Trainer(id, spec, new DateTime(2024, 1, 1), 1000m, 2, new User());
 
     private static WorkoutProgram NewProgram(Trainer t, string name = "Plan A")
         => new WorkoutProgram(name, "Goal", "Easy", 4, t);
