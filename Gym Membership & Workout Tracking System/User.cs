@@ -88,8 +88,81 @@ namespace Gym_Membership___Workout_Tracking_System
             Email = email;
             PhoneNumber = phoneNumber;
             Address = address;
-            addUser(this);
+            
+            AddUserEXT(this);
         }
+        public User(string name, string email, string phoneNumber, Address address,Admin admin)
+        {
+            Name = name;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            AddAdmin(admin);
+            AddUserEXT(this);
+        }
+
+        public User(string name, string email, string phoneNumber, Address address, Admin admin, Trainer trainer)
+        {
+            Name = name;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            AddAdmin(admin);
+            AddTrainer(trainer);
+            AddUserEXT(this);
+        }
+        public User(string name, string email, string phoneNumber, Address address, Admin admin, Member member)
+        {
+            Name = name;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            AddAdmin(admin);
+            AddMember(member);  
+            AddUserEXT(this);
+        }
+        public User(string name, string email, string phoneNumber, Address address, Admin admin, Member member, Trainer trainer)
+        {
+            Name = name;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            AddAdmin(admin);
+            AddMember(member);
+            AddTrainer(trainer);
+            AddUserEXT(this);
+        }
+        public User(string name, string email, string phoneNumber, Address address, Trainer trainer)
+        {
+            Name = name;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            AddTrainer(trainer);
+            AddUserEXT(this);
+        }
+
+        public User(string name, string email, string phoneNumber, Address address, Trainer trainer, Member member)
+        {
+            Name = name;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            AddTrainer(trainer);
+            AddMember(member);
+            AddUserEXT(this);
+        }
+        public User(string name, string email, string phoneNumber, Address address, Member member)
+        {
+            Name = name;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            AddMember(member);
+            AddUserEXT(this);
+        }
+
+
 
         public User(User other) 
         {
@@ -116,7 +189,129 @@ namespace Gym_Membership___Workout_Tracking_System
                 return copy;
             }
         }
-        private static void addUser(User user)
+
+        private Admin? _admin;
+
+        public Admin? Admin { 
+            get
+            {
+                if(_admin == null) return null;
+                return _admin;
+            } 
+        }
+
+        public void AddAdmin(Admin admin) 
+        {
+            if (admin == null)
+            {
+                throw new ArgumentNullException("Admin cannot be null");
+            }
+            _admin = admin;
+
+            if (admin.User == null)
+            {
+                admin.AddUser(this);
+            }
+            
+        }
+
+        public void RemoveAdmin(Admin admin) 
+        {
+            if (_admin == null) throw new ArgumentNullException("Admin should be added first");
+            if (admin == null)
+            {
+                throw new ArgumentNullException("Admin cannot be null");
+            }
+            if (!_admin.Equals(admin)) throw new ArgumentException("Admin specified is different from admin in this user");
+            _admin = null;
+            if (admin.User.Equals(this))
+            {
+                admin.RemoveUser(this);
+            }
+            
+            
+
+        }
+
+        private Member? _member;
+        public Member? Member
+        {
+            get
+            {
+                if (_member == null) return null;
+                return _member;
+            }
+        }
+        public void AddMember(Member member)
+        {
+            if (member == null)
+            {
+                throw new ArgumentNullException("Member cannot be null");
+            }
+            _member = member;
+            if (member.User == null)
+            {
+                member.AddUser(this);
+            }
+            
+        }
+
+        public void RemoveMember(Member member)
+        {
+            if (_member == null) throw new ArgumentNullException("Member should be added first");
+            if (member == null)
+            {
+                throw new ArgumentNullException("Member cannot be null");
+            }
+            if (!_member.Equals(member)) throw new ArgumentException("Member specified is different from member in this user");
+            _member = null;
+            if (member.User.Equals(this))
+            {
+                member.RemoveUser(this);
+            }
+            
+            
+        }
+
+        private Trainer? _trainer;
+        public Trainer? Trainer
+        {
+            get
+            {
+                if (_trainer == null) return null;
+                return _trainer;
+            }
+        }
+        public void AddTrainer(Trainer trainer)
+        {
+            if (trainer == null)
+            {
+                throw new ArgumentNullException("Trainer cannot be null");
+            }
+            _trainer = trainer;
+            if (trainer.User == null)
+            {
+                trainer.AddUser(this);
+            }
+            
+        }
+
+        public void RemoveTrainer(Trainer trainer)
+        {
+            if (_trainer == null) throw new ArgumentNullException("Trainer should be added first");
+            if (trainer == null)
+            {
+                throw new ArgumentNullException("Trainer cannot be null");
+            }
+            if (!_trainer.Equals(trainer)) throw new ArgumentException("Trainer specified is different from trainer in this user");
+            _trainer = null;
+            if (trainer.User.Equals(this))
+            {
+                trainer.RemoveUser(this);
+            }
+            
+        }
+        private static void AddUserEXT(User user)
         {
             if (_users.Contains(user))
             {
@@ -128,7 +323,21 @@ namespace Gym_Membership___Workout_Tracking_System
             }
             _users.Add(user);
         }
-
+        public static void RemoveUserEXT(User user) 
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("Value must be specified");
+            }
+            if (!_users.Contains(user))
+            {
+                throw new ArgumentException("Value is not in the list");
+            }
+            _users.Remove(user);
+            if (user._admin != null) user._admin.RemoveUser(user);
+            if (user._member != null) user._member.RemoveUser(user);
+            if(user._trainer != null) user._trainer.RemoveUser(user);
+        }
         
 
         public static void save(string path = "users.json")
@@ -171,5 +380,6 @@ namespace Gym_Membership___Workout_Tracking_System
                 );
             }
         }
+        
     }
 }

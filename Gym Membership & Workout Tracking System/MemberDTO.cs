@@ -15,5 +15,6 @@ namespace Gym_Membership___Workout_Tracking_System
         public MembershipStatus MembershipStatus { get; set; }
         public List<EntryRecordDTO> EntryRecords { get; set; } = new();
         public List<BoughtMembershipDTO> BoughtMemberships { get; set; } = new();
+        public User User { get; set; }
     }
 }

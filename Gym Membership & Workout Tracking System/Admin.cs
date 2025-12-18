@@ -20,11 +20,50 @@ public class Admin
         }
     }
 
-    public Admin(int adminLevel, List<string> permissions)
+    private User _user;
+    public User User { get { return _user; } set 
+        {
+            if (value == null) throw new ArgumentNullException("User must be specified");
+            _user = value;
+        } 
+    }
+
+    public void AddUser(User user) 
+    {
+        if (user == null)
+        {
+            throw new ArgumentNullException("User cannot be null");
+        }
+        _user = user;
+        if (user.Admin == null)
+        {
+            user.AddAdmin(this);
+        }
+         
+    }
+
+    public void RemoveUser(User user) 
+    {
+        if (_user == null) throw new ArgumentNullException("User should be added first");
+        if (user == null)
+        {
+            throw new ArgumentNullException("User cannot be null");
+        }
+        if (!_user.Equals(user)) throw new ArgumentException("User specified is different from user in this admin");
+        _user = null;
+        if (user.Admin != null && user.Admin.Equals(this))
+        {
+            user.RemoveAdmin(this);
+        }
+        DeleteAdminEXT(this);
+    }
+
+    public Admin(int adminLevel, List<string> permissions, User user)
     {
         AdminLevel = adminLevel;
         Permissions = permissions;
-        AddAdmins(this);
+        User = user;
+        AddAdminEXT(this);
     }
 
     public void ManagePermissions(string permission, bool add)
@@ -59,7 +98,7 @@ public class Admin
     {
         AdminLevel = other.AdminLevel;
         Permissions = other.Permissions;
-
+        User = other.User;
     }
     public static void save(string path = "admins.json")
     {
@@ -92,11 +131,11 @@ public class Admin
         foreach (var dto in dtoList)
         {
             new Admin(
-                dto.AdminLevel, dto.Permissions
+                dto.AdminLevel, dto.Permissions, dto.User
             );
         }
     }
-    private static void AddAdmins(Admin admin) 
+    private static void AddAdminEXT(Admin admin) 
     {
         if (_admins.Contains(admin))
         {
@@ -107,5 +146,17 @@ public class Admin
             throw new ArgumentNullException("Value must be specified");
         }
         _admins.Add(admin);
+    }
+    public static void DeleteAdminEXT(Admin admin) 
+    {
+        if (admin == null)
+        {
+            throw new ArgumentNullException("Value must be specified");
+        }
+        if (!_admins.Contains(admin))
+        {
+            throw new ArgumentException("Value is not in the list");
+        }
+        _admins.Remove(admin);
     }
 }

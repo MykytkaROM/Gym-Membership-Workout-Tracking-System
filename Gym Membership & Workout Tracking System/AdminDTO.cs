@@ -11,6 +11,6 @@ namespace Gym_Membership___Workout_Tracking_System
         public int AdminLevel { get; set; }
         public List<string> Permissions { get; set; }
 
-
+        public User User { get; set; }
     }
 }

@@ -69,6 +69,45 @@ namespace Gym_Membership___Workout_Tracking_System
                 return copy;
             }
         }
+        private User _user;
+        public User User
+        {
+            get { return _user; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("User must be specified");
+                _user = value;
+            }
+        }
+        public void AddUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("User cannot be null");
+            }
+            _user = user;
+            if (user.Trainer == null)
+            {
+                user.AddTrainer(this);
+            }
+            
+        }
+
+        public void RemoveUser(User user)
+        {
+            if (_user == null) throw new ArgumentNullException("User should be added first");
+            if (user == null)
+            {
+                throw new ArgumentNullException("User cannot be null");
+            }
+            if (!_user.Equals(user)) throw new ArgumentException("User specified is different from user in this trainer");
+            _user = null;
+            if (user.Trainer != null && user.Trainer.Equals(this))
+            {
+                user.RemoveTrainer(this);
+            }
+            RemoveTrainerEXT(this);
+        }
         private static void AddTrainerEXT(Trainer trainer) 
         {
             if (trainer == null)
@@ -83,6 +122,19 @@ namespace Gym_Membership___Workout_Tracking_System
                 throw new ArgumentException("Duplicate trainer ID.");
 
             _trainers.Add(trainer);
+        }
+
+        public static void RemoveTrainerEXT(Trainer trainer) 
+        {
+            if (trainer == null)
+            {
+                throw new ArgumentNullException("Value must be specified");
+            }
+            if (!_trainers.Contains(trainer))
+            {
+                throw new ArgumentException("Value is not in the list");
+            }
+            _trainers.Remove(trainer);
         }
         public Trainer(Trainer trainer) 
         {
@@ -100,14 +152,16 @@ namespace Gym_Membership___Workout_Tracking_System
             {
                 _trainees = null;
             }
+            User = trainer.User;
         }
-        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience) 
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, User user) 
         {
             TrainerID= trainerID;
             Specialization = specialization;
             _hireDate = hireDate;
             BaseSalary = baseSalary;
             YearOfExperience= yearOfExpirience;
+            User = user;
             AddTrainerEXT(this);
         }
         public static void save(string path = "Trainers.json")
@@ -151,8 +205,8 @@ namespace Gym_Membership___Workout_Tracking_System
                     dto.Specialization,
                     dto.HireDate,
                     dto.BaseSalary,
-                    dto.YearOfExpirience
-
+                    dto.YearOfExpirience,
+                    dto.User
                 );
                 trainerMap.Add(newTrainer.TrainerID, newTrainer);
             }
@@ -254,38 +308,42 @@ namespace Gym_Membership___Workout_Tracking_System
             }
         }
 
-        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, Trainer mentor)
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, Trainer mentor, User user)
         {
             TrainerID = trainerID;
             Specialization = specialization;
             _hireDate = hireDate;
             BaseSalary = baseSalary;
             YearOfExperience = yearOfExpirience;
+            User = user;
             AddMentor(mentor);
             AddTrainerEXT(this);
         }
-        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, List<Trainer> trainees)
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, List<Trainer> trainees, User user)
         {
             TrainerID = trainerID;
             Specialization = specialization;
             _hireDate = hireDate;
             BaseSalary = baseSalary;
             YearOfExperience = yearOfExpirience;
+            User = user;
             trainees.ForEach(trainee => { AddTrainee(trainee); });
             AddTrainerEXT(this);
         }
-        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, Trainer mentor, List<Trainer> trainees)
+        public Trainer(int trainerID, string specialization, DateTime hireDate, decimal baseSalary, int yearOfExpirience, Trainer mentor, List<Trainer> trainees, User user)
         {
             TrainerID = trainerID;
             Specialization = specialization;
             _hireDate = hireDate;
             BaseSalary = baseSalary;
             YearOfExperience = yearOfExpirience;
+            User = user;
             AddMentor(mentor);
             trainees.ForEach(trainee => { AddTrainee(trainee); });
             AddTrainerEXT(this);
         }
-        
+        //TODO Where are contructor for WorkoutProgram?
+
         // private readonly List<WorkoutProgram> _workoutPrograms = new List<WorkoutProgram>();
         //
         // public List<WorkoutProgram> WorkoutPrograms => _workoutPrograms;
@@ -300,7 +358,7 @@ namespace Gym_Membership___Workout_Tracking_System
             }
         }
         
-        //toDO prodnik help me
+        
         public bool ContainsWorkoutProgram(WorkoutProgram program)
         {
             if (program == null) throw new ArgumentNullException("WorkoutProgram cannot be null");

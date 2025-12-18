@@ -116,7 +116,45 @@ namespace Gym_Membership___Workout_Tracking_System
             }
         }
 
-        
+        private User _user;
+        public User User
+        {
+            get { return _user; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("User must be specified");
+                _user = value;
+            }
+        }
+        public void AddUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("User cannot be null");
+            }
+            _user = user;
+            if (user.Member == null)
+            {
+                user.AddMember(this);
+            }
+            
+        }
+
+        public void RemoveUser(User user)
+        {
+            if (_user == null) throw new ArgumentNullException("User should be added first");
+            if (user == null)
+            {
+                throw new ArgumentNullException("User cannot be null");
+            }
+            if (!_user.Equals(user)) throw new ArgumentException("User specified is different from user in this member");
+            _user = null;
+            if (user.Member != null && user.Member.Equals(this))
+            {
+                user.RemoveMember(this);
+            }
+            RemoveMemberEXT(this);
+        }
         public Member(Member other) 
         {
             if (other._EntryRecords != null)
@@ -132,20 +170,21 @@ namespace Gym_Membership___Workout_Tracking_System
             MembershipType = other.MembershipType;
             TotalPoints = other.TotalPoints;
             MembershipStatus = other.MembershipStatus;
-            
+            User = other.User;
             _boughtMemberships = new List<BoughtMembership>(other._boughtMemberships);
         }
-        public Member(int memberID, DateTime joinDate, string membershipType, int totalPoints, MembershipStatus status) 
+        public Member(int memberID, DateTime joinDate, string membershipType, int totalPoints, MembershipStatus status, User user) 
         {
             MemberID=memberID;
             _joinDate = joinDate;
             MembershipType = membershipType;
             TotalPoints = totalPoints;
             MembershipStatus = status;
+            User = user;
             _EntryRecords = new Dictionary<DateTime, EntryRecord>();
             AddMemberEXT(this);
         }
-        public Member(int memberID, DateTime joinDate, string membershipType, int totalPoints, MembershipStatus status, Dictionary<DateTime,EntryRecord> entryRecords)
+        public Member(int memberID, DateTime joinDate, string membershipType, int totalPoints, MembershipStatus status, Dictionary<DateTime,EntryRecord> entryRecords, User user)
         {
             MemberID = memberID;
             _joinDate = joinDate;
@@ -157,7 +196,7 @@ namespace Gym_Membership___Workout_Tracking_System
                 value.AddMember(this);
             }
             _EntryRecords = entryRecords;
-            
+            User = user;
             AddMemberEXT(this);
         }
         private static void AddMemberEXT(Member member)
@@ -258,7 +297,8 @@ namespace Gym_Membership___Workout_Tracking_System
                    dto.JoinDate,
                    dto.MembershipType,
                    dto.TotalPoints,
-                   dto.MembershipStatus
+                   dto.MembershipStatus,
+                   dto.User
                 );
                 member._EntryRecords = new Dictionary<DateTime, EntryRecord>();
                 
