@@ -15,12 +15,14 @@ public class TrainingGroup : TrainingSession
         }
     }
     
-    public TrainingGroup(string name, DateTime date, DateTime startTime, DateTime endTime, decimal price)
+    public TrainingGroup(string name, DateTime date, DateTime startTime, DateTime endTime, decimal price, bool addToExtent = true)
         : base(name,
             date,
             startTime,
             endTime)
     {
         Price = price;
+        if (addToExtent)
+            AddTrainingSessionEXT(this);
     }
 }

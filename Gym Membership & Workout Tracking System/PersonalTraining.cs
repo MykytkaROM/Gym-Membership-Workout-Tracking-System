@@ -13,13 +13,15 @@ public class PersonalTraining : TrainingSession
         }
     }
     
-    public PersonalTraining(string name, DateTime date, DateTime startTime, DateTime endTime, decimal pricePerHour)
+    public PersonalTraining(string name, DateTime date, DateTime startTime, DateTime endTime, decimal pricePerHour, bool addToExtent = true)
         : base(name,
             date,
             startTime,
             endTime)
     {
         PricePerHour = pricePerHour;
+        if (addToExtent)
+            AddTrainingSessionEXT(this);
     }
     
     public decimal CalculateTotalPrice()
